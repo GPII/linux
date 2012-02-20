@@ -1,15 +1,25 @@
 var url = require('url');
 var fs = require('fs');
+var http = require('http');
 
 /*
- * GET home page.
+ * GET users.
  */
-
-exports.index = function(req, res){
+exports.user = function(req, res){
   var urlString = url.parse(req.url, true).query;
   var logFile = fs.openSync('./log.txt', 'a+');
   if (urlString.action == 'login') {
     fs.writeSync(logFile, 'User logged in on device ' + urlString.device + ' with token ' + urlString.token + '\n', null);
+    var prefServer = {
+      host: 'localhost',
+      port: 8000,
+      path: '/user' + urlString.token
+    };
+    http.get(prefServer, function (res) {
+        // Do nothing.
+    }).on('error', function (e) {
+        console.log('Cannot connect to preferences server.');
+    });
   } else if (urlString.action == 'logout') {
     fs.writeSync(logFile, 'User logged out from device ' + urlString.device + '\n', null);
   }
