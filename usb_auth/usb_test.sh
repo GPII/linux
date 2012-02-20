@@ -7,10 +7,10 @@ if [ $1 -eq 1 ]; then
 		retries=$[$retries+1]
 		sleep 1
 	done
-	loc=`mount | grep /sdb1 |cut -d " " -f 3` # The location where the USB disk drive is mounted.
+	loc=`mount | grep $2 |cut -d " " -f 3` # The location where the USB disk drive is mounted.
 	token=`cat $loc/token.txt` # The token that identifies the user.
-	curl http://localhost:3000/users?action=login\&device=$2\&token=$token # A call to the Node.js server
+	curl http://localhost:3000/user?action=login\&device=$2\&token=$token # A call to the Node.js server
 else
 	# USB disk drive is removed.
-	curl http://localhost:3000/users?action=logout\&device=$2
+	curl http://localhost:3000/user?action=logout\&device=$2
 fi
