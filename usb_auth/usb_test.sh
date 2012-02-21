@@ -7,13 +7,15 @@ if [ $1 -eq 1 ]; then
 		retries=$[$retries+1]
 		sleep 1
 	done
-	loc=`mount | grep $2 |cut -d " " -f 3` # The location where the USB disk drive is mounted.
-	token=`cat $loc/token.txt` # The token that identifies the user.
+
+	mountLocation=`mount | grep $2 |cut -d " " -f 3`
+	token=`cat $mountLocation/token.txt`
 	echo "User logged in on device $2 with token ${token}." >> log.txt
-	curl http://localhost:3000/user/$token # A call to the preferences server
-	# curl http://localhost:3000/user/$token/login # A call to the Flow Manager
+	echo $2:$token >> users.txt						# Keep the location and token in a users file.
+	curl http://localhost:3000/user/$token
 else
 	# USB disk drive is removed.
-	echo "User logged out from device $2." >> log.txt
-	# curl http://localhost:3000/user/$token/logout # A call to the Flow Manager
+	token=`grep $2 < users.txt | cut -d ":" -f 2`
+	sed -ie "\|^$2|d" users.txt 						# Remove entry from the users file
+	echo "User logged out from device $2 with token ${token}." >> log.txt
 fi
