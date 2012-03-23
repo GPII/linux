@@ -1,11 +1,6 @@
-(funciton () {
+var fluid = require("universal"),
+    gpii = fluid.registerNamespace("gpii");
 
-    var fluid = require("infusion");
-    var gpii = fluid.registerNamespace("gpii");
+fluid.require("linux", require);
 
-    fluid.require("universal", require);
-    fluid.require("linux", require);
-
-    gpii.flowManager();
-
-})();
+gpii.flowManager();
