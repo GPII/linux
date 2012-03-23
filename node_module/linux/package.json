@@ -13,7 +13,7 @@
      }
   ],
   "keywords": ["gpii", "accessibility", "settings", "fluid", "IoC", "Inversion of Control", "configuration", "evented"],
-  "repository": "git@github.com:GPII/linux.git",
+  "repository": "git://github.com:GPII/linux.git",
   "main": "./index.js",
   "engines": { "node" : ">=0.1.9" }
 }
