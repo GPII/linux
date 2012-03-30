@@ -1,6 +1,6 @@
 var fluid = require("universal"),
     gpii = fluid.registerNamespace("gpii");
 
-fluid.require("linux", require);
+fluid.require("gsettingsBridge", require);
 
 gpii.flowManager();
