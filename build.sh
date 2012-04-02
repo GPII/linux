@@ -60,4 +60,4 @@ fi
 # Install the USB Drive User Listener
 # TODO: We should install the entire GPII in /usr/local/gpii, not just the USB Listener
 sudo cp -r "$usbListenerDir/bin" "$gpiiInstallDir/bin"
-sudo cp "$usbListenerDir/80-local.rules" /etc/udev/rules.d/
+sudo cp "$usbListenerDir/80-gpii.rules" /etc/udev/rules.d/
