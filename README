@@ -1,7 +1,6 @@
-This repository contains GPII-related prototypes, created as a part of the Cloud4All project. For more information, please visit:
-http://gpii.net/
-http://wiki.gpii.net/
-http://cordis.europa.eu/fetch?CALLER=PROJ_ICT&ACTION=D&DOC=5&CAT=PROJ&QUERY=013516d86760:1ec6:217fdf0e&RCN=101353
+This repository contains all of the platform-specific code required to run the GPII Personalization Framework on Linux with GNOME.
 
-The following projects can be found in the repository:
-usb_auth - User authentication with a USB stick and a token. Linux prototype.
+The following components can be found in the repository:
+
+* usbDriveListener: a UserListener implementation that will detect a USB drive with an anonymous GPII user token installed on it
+* gSettingsBridge: a Node.js module for accessing the gSettings API via JavaScript within a Node application
