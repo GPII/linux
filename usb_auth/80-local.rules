@@ -1,0 +1,2 @@
+KERNEL=="sd[a-z][0-9]", SUBSYSTEM=="block", SUBSYSTEMS=="usb", ACTION=="add", RUN+="/home/boyan/repos/gpiistack/usb_auth/trigger.sh 1 /dev/%k"
+KERNEL=="sd[a-z][0-9]", SUBSYSTEM=="block", SUBSYSTEMS=="usb", ACTION=="remove", RUN+="/home/boyan/repos/gpiistack/usb_auth/trigger.sh 0 /dev/%k"
