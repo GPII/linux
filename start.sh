@@ -2,8 +2,8 @@
 
 fileName="gpii.js"
 
-# Install required dependencies if necessary.
-./install.sh
+# Build and install the GPII
+./build.sh
 
 # Start the Flow Manager
 node "$fileName"
