@@ -1,8 +1,6 @@
 Usage instructions:
-1. Change the path in the '80-local.rules' and 'trigger.sh' to the folder where the corresponding files are located on your machine.
-2. Copy '80-local.rules' to /etc/udev/rules.d (you will need admin privileges).
-3. Run 'app.js' using Node.js server.
-4. Copy 'token.txt' to a USB flash disk.
-5. Add/remove the USB disc and observe the output in 'log.txt' in the same folder.
-
-Tested on Fedora 16 with Gnome 3.2.2.1
+1. Make sure you've built the Linux repository by running ../build.sh
+2. Prepare a USB stick with a Linux-readable file system
+3. Copy tests/.gpii-user-token.txt to the root level of your USB stick
+4. Start the Flow Manager by running ../start.sh
+5. Add/remove the USB stick and watch your settings change!

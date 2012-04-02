@@ -1,4 +1,15 @@
 #!/bin/sh
+
+# GPII Linux USB Drive User Listener
+#
+# Copyright 2012 Astea Solutions
+#
+# Licensed under the New BSD license. You may not use this file except in
+# compliance with this License.
+#
+# You may obtain a copy of the License at
+# https://github.com/gpii/universal/LICENSE.txt
+
 usersFilePath="/var/lib/gpii/users.txt"
 
 if [ $1 -eq 1 ]; then
