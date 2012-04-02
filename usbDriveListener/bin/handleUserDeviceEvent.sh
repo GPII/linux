@@ -11,6 +11,7 @@
 # https://github.com/gpii/universal/LICENSE.txt
 
 usersFilePath="/var/lib/gpii/users.txt"
+logFilePath="/var/lib/gpii/log.txt"
 
 if [ $1 -eq 1 ]; then
 	# USB disk drive is added.
@@ -23,13 +24,13 @@ if [ $1 -eq 1 ]; then
 
 	mountLocation=`mount | grep $2 |cut -d " " -f 3`
 	token=`cat $mountLocation/.gpii-user-token.txt`
-	echo "User logged in on device $2 with token ${token}." >> log.txt
+	echo "User logged in on device $2 with token ${token}." >> "$logFilePath"
 	echo $2:$token >> "$usersFilePath"						# Keep the location and token in a users file.
-	curl http://localhost:3000/user/$token/login
+	curl http://localhost:8081/user/$token/login
 else
 	# USB disk drive is removed.
-	curl http://localhost:3000/user/$token/logout
+	curl http://localhost:8081/user/$token/logout
 	token=`grep $2 < "$usersFilePath" | cut -d ":" -f 2`
 	sed -ie "\|^$2|d" "$usersFilePath" 						# Remove entry from the users file
-	echo "User logged out from device $2 with token ${token}." >> log.txt
+	echo "User logged out from device $2 with token ${token}." >> "$logFilePath"
 fi

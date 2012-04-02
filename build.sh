@@ -12,7 +12,7 @@
 
 node_modules="../node_modules"
 universal="../node_modules/universal"
-repoURL="git://github.com/GPII/universal.git"
+repoURL="git://github.com/yzen/universal.git" # TODO: Change this back to the GPII project repo as soon as Yura's pull request is in.
 usbListenerDir="./usbDriveListener"
 gpiiInstallDir="/usr/local/gpii"
 gpiiStateDir="/var/lib/gpii"
@@ -37,7 +37,7 @@ fi
 # Compile the GSettings C++ Bridge
 cd node_modules/gsettingsBridge/nodegsettings
 node-waf configure build
-
+cd ../../..
 
 # Create standard directory structure for GPII.
 # Note: everything below here must be run as root, since we're installing ourselves centrally.
@@ -46,7 +46,7 @@ if [ -d $gpiiInstallDir ]; then
 else
     echo "$gpiiInstallDir does not exist"
     echo "creating $gpiiInstallDir"
-	mkdir -p "$gpiiInstallDir"
+	sudo mkdir -p "$gpiiInstallDir"
 fi
 
 if [ -d $gpiiStateDir ]; then
@@ -54,10 +54,10 @@ if [ -d $gpiiStateDir ]; then
 else
     echo "$gpiiStateDir does not exist"
     echo "creating $gpiiStateDir"
-	mkdir -p "$gpiiStateDir"
+	sudo mkdir -p "$gpiiStateDir"
 fi
 
 # Install the USB Drive User Listener
 # TODO: We should install the entire GPII in /usr/local/gpii, not just the USB Listener
-cp -r "$usbListenerDir/bin" "$gpiiInstallDir/bin"
-cp "$usbListenerDir/80-local.rules" /etc/udev/rules.d/
+sudo cp -r "$usbListenerDir/bin" "$gpiiInstallDir/bin"
+sudo cp "$usbListenerDir/80-local.rules" /etc/udev/rules.d/
