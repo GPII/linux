@@ -29,8 +29,8 @@ if [ $1 -eq 1 ]; then
 	curl http://localhost:8081/user/$token/login
 else
 	# USB disk drive is removed.
-	curl http://localhost:8081/user/$token/logout
 	token=`grep $2 < "$usersFilePath" | cut -d ":" -f 2`
+	curl http://localhost:8081/user/$token/logout
 	sed -ie "\|^$2|d" "$usersFilePath" 						# Remove entry from the users file
 	echo "User logged out from device $2 with token ${token}." >> "$logFilePath"
 fi
