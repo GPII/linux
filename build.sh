@@ -12,7 +12,7 @@
 
 node_modules="../node_modules"
 universal="../node_modules/universal"
-repoURL="git://github.com/yzen/universal.git" # TODO: Change this back to the GPII project repo as soon as Yura's pull request is in.
+repoURL="git://github.com/GPII/universal.git" 
 usbListenerDir="./usbDriveListener"
 gpiiInstallDir="/usr/local/gpii"
 gpiiStateDir="/var/lib/gpii"
@@ -20,14 +20,14 @@ gpiiStateDir="/var/lib/gpii"
 # Clone the necessary GPII framework dependencies from Git.
 # TODO: Deal with cut and pastage for directory creation logic.
 if [ -d $node_modules ]; then
-	echo "$node_modules already exists"
+    echo "$node_modules already exists"
 else
     echo "$node_modules does not exist"
     echo "creating $node_modules"
-	mkdir -p "$node_modules"
+    mkdir -p "$node_modules"
 fi
 if [ -d $universal ]; then
-	echo "$universal already exists"
+    echo "$universal already exists"
 else
     echo "$universal does not exist"
     echo "cloning universal"
@@ -42,19 +42,19 @@ cd ../../..
 # Create standard directory structure for GPII.
 # Note: everything below here must be run as root, since we're installing ourselves centrally.
 if [ -d $gpiiInstallDir ]; then
-	echo "$gpiiInstallDir already exists"
+    echo "$gpiiInstallDir already exists"
 else
     echo "$gpiiInstallDir does not exist"
     echo "creating $gpiiInstallDir"
-	sudo mkdir -p "$gpiiInstallDir"
+    sudo mkdir -p "$gpiiInstallDir"
 fi
 
 if [ -d $gpiiStateDir ]; then
-	echo "$gpiiStateDir already exists"
+    echo "$gpiiStateDir already exists"
 else
     echo "$gpiiStateDir does not exist"
     echo "creating $gpiiStateDir"
-	sudo mkdir -p "$gpiiStateDir"
+    sudo mkdir -p "$gpiiStateDir"
 fi
 
 # Install the USB Drive User Listener
