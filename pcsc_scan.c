@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
 	char *magenta = "";
 	char *color_end = "";
 	int pnp = TRUE;
+        int logged_in = FALSE;
+        time_t logged_in_time;
 
 	printf("PC/SC device scanner\n");
 	printf("V " VERSION " (c) 2001-2011, Ludovic Rousseau <ludovic.rousseau@free.fr>\n");
@@ -358,12 +360,35 @@ get_readers:
 				printf("Status unavailable, ");
 
 			if (rgReaderStates_t[current_reader].dwEventState &
-				SCARD_STATE_EMPTY)
+				SCARD_STATE_EMPTY) 
+                          {
 				printf("Card removed, ");
+                                /* if (logged_in) { */
+                                /*   printf("Logging out"); */
+                                /*   system("curl http://localhost:8081/user/intergalacticSheepherder/logout"); */
+                                /*   logged_in = FALSE; */
+                                /* } */
+                          }
+                        
 
 			if (rgReaderStates_t[current_reader].dwEventState &
-				SCARD_STATE_PRESENT)
-				printf("Card inserted, ");
+                            SCARD_STATE_PRESENT) {
+				printf("Card inserted, launching...");
+                                time_t current_time = time(NULL);
+                                if (logged_in) {
+                                  time_t session_duration = current_time-logged_in_time;
+                                  printf("Session Duration: %i", (int)session_duration);
+                                  if (session_duration > 5) {
+                                     system("curl http://localhost:8081/user/intergalacticSheepherder/logout"); 
+                                     logged_in = FALSE;
+                                  }
+                                }
+                                else {                                  
+                                  system("curl http://localhost:8081/user/intergalacticSheepherder/login");
+                                  logged_in = TRUE;
+                                  logged_in_time = time(NULL);
+                                }
+                        }
 
 			if (rgReaderStates_t[current_reader].dwEventState &
 				SCARD_STATE_ATRMATCH)
