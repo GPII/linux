@@ -46,6 +46,19 @@
 #define SCARD_E_NO_READERS_AVAILABLE 0x8010002E
 #endif
 
+int num_gpii_tokens = 3;
+char *gpii_atrs[] = {
+  "3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A",
+  "3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 26 00 00 00 00 4D",
+  "3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 03 00 00 00 00 68"
+};
+char *gpii_tokens[] = {
+  "intergalacticSheepherder",
+  "alanMathisonTuring",
+  "donaldKnuth"
+};
+
+
 #define test_rv(fct, rv, hContext) \
 do { \
 	if (rv != SCARD_S_SUCCESS) \
@@ -77,6 +90,7 @@ int main(int argc, char *argv[])
 	char *ptr, **readers = NULL;
 	int nbReaders, i;
 	char atr[MAX_ATR_SIZE*3+1];	/* ATR in ASCII */
+        char atr_packed[MAX_ATR_SIZE*3+1];
 	char atr_command[sizeof(atr)+sizeof(ATR_PARSER)+2+1];
 	int opt;
 	int analyse_atr = TRUE;
@@ -373,21 +387,65 @@ get_readers:
 
 			if (rgReaderStates_t[current_reader].dwEventState &
                             SCARD_STATE_PRESENT) {
-				printf("Card inserted, launching...");
-                                time_t current_time = time(NULL);
-                                if (logged_in) {
-                                  time_t session_duration = current_time-logged_in_time;
-                                  printf("Session Duration: %i", (int)session_duration);
-                                  if (session_duration > 5) {
-                                     system("curl http://localhost:8081/user/intergalacticSheepherder/logout"); 
-                                     logged_in = FALSE;
+                          if (rgReaderStates_t[current_reader].cbAtr > 0)
+                            {
+                              printf("  ATR: ");
+                                
+                              if (rgReaderStates_t[current_reader].cbAtr)
+				{
+                                  for (i=0; i<rgReaderStates_t[current_reader].cbAtr; i++) {
+                                    sprintf(&atr[i*3], "%02X ",
+                                            rgReaderStates_t[current_reader].rgbAtr[i]);
+                                    sprintf(&atr_packed[i*2], "%02X",
+                                            rgReaderStates_t[current_reader].rgbAtr[i]);
+
+                                  }
+                                  atr[i*3-1] = '\0';
+                                  atr_packed[i*2] = '\0';
+				}
+                              else
+                                {
+                                  atr[0] = '\0';
+                                  atr_packed[0] = '\0';
+                                }
+                              printf("Card inserted.  "); 
+                              printf("%s%s%s\n", magenta, atr, color_end);
+                                
+                              int count = 0;
+                              int comp = 1;
+                              for (count = 0; count < num_gpii_tokens; count++ ) {
+                                // sprintf("The comp: %d", strncmp(atr,gpii_atrs[count],4));
+
+                                comp = strcmp(atr,gpii_atrs[count]);
+                                /* printf("The comp: %d\n", comp); */
+                                /* printf(" %s\n", gpii_atrs[count]); */
+                                /* printf("The 2ompstr %s\n", atr); */
+                                /* printf("What the %d\n", count); */
+                                if (comp == 0) {
+                                  time_t current_time = time(NULL);
+                                  if (logged_in) {
+                                    time_t session_duration = current_time-logged_in_time;
+                                    printf("Session Duration: %i", (int)session_duration);
+                                    if (session_duration > 5) {
+                                      char logout_cmd[1024];
+                                      sprintf(&logout_cmd, "curl http://localhost:8081/user/%s/logout", gpii_tokens[count]);
+                                      system(logout_cmd);
+                                      printf("\n");
+                                      logged_in = FALSE;
+                                    }
+                                  }
+                                  else {           
+                                    char login_cmd[1024];
+                                    sprintf(&login_cmd, "curl http://localhost:8081/user/%s/login", gpii_tokens[count]);
+                                    system(login_cmd);
+                                    printf("\n");
+                                    logged_in = TRUE;
+                                    logged_in_time = time(NULL);
                                   }
                                 }
-                                else {                                  
-                                  system("curl http://localhost:8081/user/intergalacticSheepherder/login");
-                                  logged_in = TRUE;
-                                  logged_in_time = time(NULL);
-                                }
+                                comp = 1;  
+                              }
+                            }
                         }
 
 			if (rgReaderStates_t[current_reader].dwEventState &
@@ -411,36 +469,6 @@ get_readers:
 			/* force display */
 			fflush(stdout);
 
-			/* Also dump the ATR if available */
-			if (rgReaderStates_t[current_reader].cbAtr > 0)
-			{
-				printf("  ATR: ");
-
-				if (rgReaderStates_t[current_reader].cbAtr)
-				{
-					for (i=0; i<rgReaderStates_t[current_reader].cbAtr; i++)
-						sprintf(&atr[i*3], "%02X ",
-							rgReaderStates_t[current_reader].rgbAtr[i]);
-
-					atr[i*3-1] = '\0';
-				}
-				else
-					atr[0] = '\0';
-
-				printf("%s%s%s\n", magenta, atr, color_end);
-
-				/* force display */
-				fflush(stdout);
-
-				if (analyse_atr)
-				{
-					printf("\n");
-
-					sprintf(atr_command, ATR_PARSER " '%s'", atr);
-					if (system(atr_command))
-						perror(atr_command);
-				}
-			}
 		} /* for */
 
 		rv = SCardGetStatusChange(hContext, timeout, rgReaderStates_t,
