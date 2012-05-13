@@ -22,8 +22,8 @@ if [ $1 -eq 1 ]; then
 		sleep 1
 	done
 
-	mountLocation=`mount | grep $2 |cut -d " " -f 3`
-	token=`cat $mountLocation/.gpii-user-token.txt`
+	mountLocation=`mount | grep $2 | sed -e "s#/[^ ]\+ [^ ]\+ \(.*\) type.*#\1#"`
+	token=`cat "$mountLocation/.gpii-user-token.txt"`
 	echo "User logged in on device $2 with token ${token}." >> "$logFilePath"
 	echo $2:$token >> "$usersFilePath"						# Keep the location and token in a users file.
 	curl http://localhost:8081/user/$token/login
