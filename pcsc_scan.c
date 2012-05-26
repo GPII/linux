@@ -46,18 +46,12 @@
 #define SCARD_E_NO_READERS_AVAILABLE 0x8010002E
 #endif
 
-int num_gpii_tokens = 3;
-char *gpii_atrs[] = {
-  "3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A",
-  "3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 26 00 00 00 00 4D",
-  "3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 03 00 00 00 00 68"
-};
-char *gpii_tokens[] = {
-  "intergalacticSheepherder",
-  "alanMathisonTuring",
-  "donaldKnuth"
-};
-
+#define CHECK(f, rv) \
+ if (SCARD_S_SUCCESS != rv) \
+ { \
+  printf(f ": %s\n", pcsc_stringify_error(rv)); \
+  return -1; \
+ }
 
 #define test_rv(fct, rv, hContext) \
 do { \
@@ -77,6 +71,86 @@ void usage(void)
 	printf("  -h : this help\n");
 } /* usage */
 
+/**
+ * Given various Card parameters this fetches the current GPII token
+ * as saved on the NFC Card. Currently this is based off of using the
+ * 'text only' flashing feature of a Windows App we used to flash the
+ * cards, which seems to be starting the text at position 9 on block
+ * 4.
+ */
+char* get_gpii_token(SCARDCONTEXT hContext, LPTSTR mszReaders, SCARDHANDLE hCard) {
+  printf("Get GPII Token stuff 8\n");
+  LONG rv;
+  DWORD dwActiveProtocol, dwRecvLength;
+  SCARD_IO_REQUEST pioSendPci;
+  BYTE load_key_cmd[] = {0xFF, 0x82, 0x00, 0x00, 0x06, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  BYTE auth_block_cmd[] = {0xFF, 0x86, 0x00, 0x00, 0x05, 0x01, 0x00, 0x04, 0x61, 0x00};
+  BYTE read_block_cmd[] = {0xFF,0xB0,0x00,0x04,0x10};
+  BYTE pbRecvBuffer[32768];
+  int block_count = 0;
+  int i = 0;
+  char token[512];
+  char token_loc = 0;
+  char url[2048];
+
+  rv = SCardConnect(hContext, mszReaders, SCARD_SHARE_SHARED,
+  SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard, &dwActiveProtocol);
+  CHECK("SCardConnect", rv);
+
+  switch(dwActiveProtocol)
+    {
+    case SCARD_PROTOCOL_T0:
+      pioSendPci = *SCARD_PCI_T0;
+      break;
+
+    case SCARD_PROTOCOL_T1:
+      pioSendPci = *SCARD_PCI_T1;
+      break;
+    }
+
+  dwRecvLength = sizeof(pbRecvBuffer);
+  rv = SCardTransmit(hCard, &pioSendPci, load_key_cmd, sizeof(load_key_cmd),
+                     NULL, pbRecvBuffer, &dwRecvLength);
+  CHECK("SCardTransmit", rv);
+
+  printf("response: ");
+  for(i=0; i<dwRecvLength; i++)
+    printf("%02X ", pbRecvBuffer[i]);
+  printf("\n");
+
+  dwRecvLength = sizeof(pbRecvBuffer);
+  rv = SCardTransmit(hCard, &pioSendPci, auth_block_cmd, sizeof(auth_block_cmd),
+                     NULL, pbRecvBuffer, &dwRecvLength);
+  CHECK("SCardTransmit", rv);
+
+  printf("response: ");
+  for(i=0; i<dwRecvLength; i++)
+    printf("%02X ", pbRecvBuffer[i]);
+  printf("\n");
+
+  for (block_count = 4; block_count<7; block_count++) {
+    dwRecvLength = sizeof(pbRecvBuffer);
+    auth_block_cmd[7] = block_count;
+    read_block_cmd[3] = block_count;
+    rv = SCardTransmit(hCard, &pioSendPci, read_block_cmd, sizeof(read_block_cmd),
+                       NULL, pbRecvBuffer, &dwRecvLength);
+    CHECK("SCardTransmit", rv);
+  
+    if (block_count == 4) {
+      i = 9;
+    } 
+    else {
+      i = 0;
+    }
+    for(i; i<(dwRecvLength-2); i++) {
+      printf("%c", pbRecvBuffer[i]);
+      token[token_loc] = pbRecvBuffer[i];
+      token_loc++;
+    }
+  }
+  return &token;
+}
+
 int main(int argc, char *argv[])
 {
 	int current_reader;
@@ -84,6 +158,7 @@ int main(int argc, char *argv[])
 	SCARDCONTEXT hContext;
 	SCARD_READERSTATE *rgReaderStates_t = NULL;
 	SCARD_READERSTATE rgReaderStates[1];
+        SCARDHANDLE hCard;
 	DWORD dwReaders = 0, dwReadersOld;
 	DWORD timeout;
 	LPSTR mszReaders = NULL;
@@ -101,6 +176,7 @@ int main(int argc, char *argv[])
 	int pnp = TRUE;
         int logged_in = FALSE;
         time_t logged_in_time;
+        char *gpii_token;
 
 	printf("PC/SC device scanner\n");
 	printf("V " VERSION " (c) 2001-2011, Ludovic Rousseau <ludovic.rousseau@free.fr>\n");
@@ -411,40 +487,32 @@ get_readers:
                               printf("Card inserted.  "); 
                               printf("%s%s%s\n", magenta, atr, color_end);
                                 
-                              int count = 0;
-                              int comp = 1;
-                              for (count = 0; count < num_gpii_tokens; count++ ) {
                                 // sprintf("The comp: %d", strncmp(atr,gpii_atrs[count],4));
 
-                                comp = strcmp(atr,gpii_atrs[count]);
-                                /* printf("The comp: %d\n", comp); */
-                                /* printf(" %s\n", gpii_atrs[count]); */
-                                /* printf("The 2ompstr %s\n", atr); */
-                                /* printf("What the %d\n", count); */
-                                if (comp == 0) {
                                   time_t current_time = time(NULL);
                                   if (logged_in) {
                                     time_t session_duration = current_time-logged_in_time;
                                     printf("Session Duration: %i", (int)session_duration);
                                     if (session_duration > 5) {
                                       char logout_cmd[1024];
-                                      sprintf(&logout_cmd, "curl http://localhost:8081/user/%s/logout", gpii_tokens[count]);
+                                      gpii_token = get_gpii_token(hContext, mszReaders,&hCard);
+                                      sprintf(&logout_cmd, "curl http://localhost:8081/user/%s/logout", gpii_token);
                                       system(logout_cmd);
+                                      printf("\nFinal Command: %s", logout_cmd);
                                       printf("\n");
                                       logged_in = FALSE;
                                     }
                                   }
-                                  else {           
+                                  else {  
+                                    gpii_token = get_gpii_token(hContext, mszReaders,&hCard);
                                     char login_cmd[1024];
-                                    sprintf(&login_cmd, "curl http://localhost:8081/user/%s/login", gpii_tokens[count]);
+                                    sprintf(&login_cmd, "curl http://localhost:8081/user/%s/login", gpii_token);
                                     system(login_cmd);
+                                    printf("\nFinal Command: %s", login_cmd);
                                     printf("\n");
                                     logged_in = TRUE;
                                     logged_in_time = time(NULL);
                                   }
-                                }
-                                comp = 1;  
-                              }
                             }
                         }
 
