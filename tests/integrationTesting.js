@@ -91,7 +91,7 @@ var integrationTestsJSON = {
             var args = {};
             args[token] = testBlock.data;
             var response = fluid.invokeGlobalFunction(testBlock.type, [args]);
-            console.log("KKKKKKAAAAAAAAAAASSSSSSSSSPPPPPPPPPPPPAAAAAAAAAARRRRRRRRRRRR: "+JSON.stringify(response));
+            //console.log("KKKKKKAAAAAAAAAAASSSSSSSSSPPPPPPPPPPPPAAAAAAAAAARRRRRRRRRRRR: "+JSON.stringify(response));
             return {
                 type: testBlock.type,
                 data: response[token]
@@ -100,115 +100,117 @@ var integrationTestsJSON = {
         return origValues;
     };
 
-    integrationTester.asyncTest("Test Sammy Login", function () {
-        //save original values:
-        originalValues = {};
-        var token = "sammy";
-        originalValues[token] = getOriginalValues(integrationTestsJSON.sammy, token);        
-        //console.log("ORIGINALS: "+JSON.stringify(originalValues));
+    var addTests = function () {
+        fluid.each(integrationTestsJSON, function (json, token) {
+            integrationTester.asyncTest("Test "+token+" Login", function () {
+                //save original values:
+                originalValues = {};
+                originalValues[token] = getOriginalValues(json, token);        
+                //console.log("ORIGINALS: "+JSON.stringify(originalValues));
 
-        var flowManager = gpii.flowManager();
-        //jqUnit.expect(2);
-        http.get({
-            host: "localhost",
-            port: 8081,
-            path: "/user/sammy/login"
-        }, function(response) {
-            var data = "";
-            fluid.log("Callback from use login called");
+                var flowManager = gpii.flowManager();
+                http.get({
+                    host: "localhost",
+                    port: 8081,
+                    path: "/user/"+token+"/login"
+                }, function(response) {
+                    var data = "";
+                    fluid.log("Callback from use login called");
 
-            response.on("data", function (chunk) {
-                fluid.log("Response from server: " + chunk);
-                data += chunk;
-            });
-            response.on("close", function(err) {
-                if (err) {
-                    jqUnit.assertFalse("Got an error on login:" + err.message, true);
-                    jqUnit.start();
-                }
-                fluid.log("Connection to the server was closed");
-            });
-            response.on("end", function() {
-                fluid.log("Connection to server ended");
-                jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
-                //After successful login, get settings and check that they're as expected.
-                fluid.each(integrationTestsJSON[token].environments.gnome, function (testBlock, textIndex) {
-                    var args = {};
-                    args[token] = testBlock.data;
-                    //wait one second to ensure that the settings have propagated
-                    setTimeout(function() {
-                        //call the settingshandler to get the settings
-                        var changedSettings = fluid.invokeGlobalFunction(testBlock.type, [args]);
-                        // console.log(JSON.stringify(args));
-                        // console.log("TMP: "+JSON.stringify(changedSettings));
-                        //go through each of the settings to compare them:
-                        fluid.each(changedSettings[token], function (arrayEntry, arrayInd) {
-                            //check each setting:
-                            fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
-                                var expectedValue = testBlock.data[arrayInd].settings[settingKey];
-                                jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
-                                //console.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
-                            });
+                    response.on("data", function (chunk) {
+                        fluid.log("Response from server: " + chunk);
+                        data += chunk;
+                    });
+                    response.on("close", function(err) {
+                        if (err) {
+                            jqUnit.assertFalse("Got an error on login:" + err.message, true);
+                            jqUnit.start();
+                        }
+                        fluid.log("Connection to the server was closed");
+                    });
+                    response.on("end", function() {
+                        fluid.log("Connection to server ended");
+                        jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
+                        //After successful login, get settings and check that they're as expected.
+                        fluid.each(json.environments.gnome, function (testBlock, textIndex) {
+                            var args = {};
+                            args[token] = testBlock.data;
+                            //wait one second to ensure that the settings have propagated
+                            setTimeout(function() {
+                                //call the settingshandler to get the settings
+                                var changedSettings = fluid.invokeGlobalFunction(testBlock.type, [args]);
+                                // console.log(JSON.stringify(args));
+                                // console.log("TMP: "+JSON.stringify(changedSettings));
+                                //go through each of the settings to compare them:
+                                fluid.each(changedSettings[token], function (arrayEntry, arrayInd) {
+                                    //check each setting:
+                                    fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
+                                        var expectedValue = testBlock.data[arrayInd].settings[settingKey];
+                                        jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
+                                        //console.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
+                                    });
+                                });
+                                jqUnit.start(); 
+                            }, 1000);
                         });
-                        jqUnit.start(); 
-                    }, 1000);
+                    });
+                }).on('error', function(err) {
+                    fluid.log("Got error: " + err.message);
+                    jqUnit.start();
                 });
             });
-        }).on('error', function(err) {
-            fluid.log("Got error: " + err.message);
-            jqUnit.start();
-        });
-    });
 
-    integrationTester.asyncTest("Test Sammy logout", function () {
-        var token = "sammy";
-        http.get({
-            host: "localhost",
-            port: 8081,
-            path: "/user/"+token+"/logout"
-        }, function(response) {
-            var data = "";
-            response.on("data", function (chunk) {
-                fluid.log("Response from server: " + chunk);
-                data += chunk;
-            });
-            response.on("close", function(err) {
-                if (err) {
-                    jqUnit.assertFalse("Got an error on login:" + err.message, true);
-                    jqUnit.start();
-                }
-                fluid.log("Connection to the server was closed");
-            });
-            response.on("end", function() {
-                fluid.log("Logout connection to server ended");
-                jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
-                //After successful logout, get settings and check that they have been properly reset
-                console.log("ORIG VALS "+JSON.stringify(originalValues));
-                fluid.each(originalValues[token].environments.gnome, function (testBlock, textIndex) {
-                    var args = {};
-                    args[token] = testBlock.data;
-                    //wait one second to ensure that the settings have propagated
-                    setTimeout(function() {
-                        //call the settingshandler to get the settings
-                        var changedSettings = fluid.invokeGlobalFunction(testBlock.type, [args]);
-                        // console.log(JSON.stringify(args));
-                        // console.log("TMP: "+JSON.stringify(changedSettings));
-                        //go through each of the settings to compare them:
-                        fluid.each(changedSettings[token], function (arrayEntry, arrayInd) {
-                            //check each setting:
-                            fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
-                                var expectedValue = testBlock.data[arrayInd].settings[settingKey];
-                                jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
-                                //console.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
-                            });
+            integrationTester.asyncTest("Test "+token+" logout", function () {
+                http.get({
+                    host: "localhost",
+                    port: 8081,
+                    path: "/user/"+token+"/logout"
+                }, function(response) {
+                    var data = "";
+                    response.on("data", function (chunk) {
+                        fluid.log("Response from server: " + chunk);
+                        data += chunk;
+                    });
+                    response.on("close", function(err) {
+                        if (err) {
+                            jqUnit.assertFalse("Got an error on login:" + err.message, true);
+                            jqUnit.start();
+                        }
+                        fluid.log("Connection to the server was closed");
+                    });
+                    response.on("end", function() {
+                        fluid.log("Logout connection to server ended");
+                        jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
+                        //After successful logout, get settings and check that they have been properly reset
+                        console.log("ORIG VALS "+JSON.stringify(originalValues));
+                        fluid.each(originalValues[token].environments.gnome, function (testBlock, textIndex) {
+                            var args = {};
+                            args[token] = testBlock.data;
+                            //wait one second to ensure that the settings have propagated
+                            setTimeout(function() {
+                                //call the settingshandler to get the settings
+                                var changedSettings = fluid.invokeGlobalFunction(testBlock.type, [args]);
+                                // console.log(JSON.stringify(args));
+                                // console.log("TMP: "+JSON.stringify(changedSettings));
+                                //go through each of the settings to compare them:
+                                fluid.each(changedSettings[token], function (arrayEntry, arrayInd) {
+                                    //check each setting:
+                                    fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
+                                        var expectedValue = testBlock.data[arrayInd].settings[settingKey];
+                                        jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
+                                        //console.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
+                                    });
+                                });
+                                jqUnit.start(); 
+                            }, 1000);
                         });
-                        jqUnit.start(); 
-                    }, 1000);
+                    });
+                }).on('error', function(err) {
+                    fluid.log("Got error: " + err.message);
+                    jqUnit.start();
                 });
             });
-        }).on('error', function(err) {
-            fluid.log("Got error: " + err.message);
-            jqUnit.start();
         });
-    });
+    };
+    addTests();
 }());
