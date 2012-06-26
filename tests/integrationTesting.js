@@ -39,10 +39,18 @@ var sammyTest = {
                 "data": [
                     {
                         "options": {
-                            "schema": "org.gnome.desktop.a11y.applications",
+                            "schema": "org.gnome.desktop.a11y.applications"
                         },
                         "settings": {
                             "screen-magnifier-enabled": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.magnifier"
+                        },
+                        "settings": {
+                            "mag-factor": 2.0
                         }
                     }
                 ]
@@ -100,7 +108,11 @@ var sammyTest = {
         origValues.environments.gnome = fluid.transform(origValues.environments.gnome, function (testBlock, textIndex) {
             var args = {};
             args[json.token] = testBlock.data;
-            return fluid.invokeGlobalFunction(testBlock.type, [args]);
+            var response = fluid.invokeGlobalFunction(testBlock.type, [args]);
+            return {
+                type: testBlock.type,
+                data: response[json.token]
+            };
         });
         return origValues;
     };
@@ -164,7 +176,54 @@ var sammyTest = {
     });
 
     integrationTester.asyncTest("Test Sammy logout", function () {
-        fluid.log("NEXT TEST!!!!!");
+        http.get({
+            host: "localhost",
+            port: 8081,
+            path: "/user/sammy/logout"
+        }, function(response) {
+            var data = "";
+            response.on("data", function (chunk) {
+                fluid.log("Response from server: " + chunk);
+                data += chunk;
+            });
+            response.on("close", function(err) {
+                if (err) {
+                    jqUnit.assertFalse("Got an error on login:" + err.message, true);
+                    jqUnit.start();
+                }
+                fluid.log("Connection to the server was closed");
+            });
+            response.on("end", function() {
+                fluid.log("Logout connection to server ended");
+                jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
+                //After successful logout, get settings and check that they have been properly reset
+                console.log("ORIG VALS "+JSON.stringify(originalValues));
+                fluid.each(originalValues.environments.gnome, function (testBlock, textIndex) {
+                    var args = {};
+                    args[sammyTest.token] = testBlock.data;
+                    //wait one second to ensure that the settings have propagated
+                    setTimeout(function() {
+                        //call the settingshandler to get the settings
+                        var changedSettings = fluid.invokeGlobalFunction(testBlock.type, [args]);
+                        // console.log(JSON.stringify(args));
+                        // console.log("TMP: "+JSON.stringify(changedSettings));
+                        //go through each of the settings to compare them:
+                        fluid.each(changedSettings[sammyTest.token], function (arrayEntry, arrayInd) {
+                            //check each setting:
+                            fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
+                                var expectedValue = testBlock.data[arrayInd].settings[settingKey];
+                                jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
+                                //console.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
+                            });
+                        });
+                        jqUnit.start(); 
+                    }, 1000);
+                });
+            });
+        }).on('error', function(err) {
+            fluid.log("Got error: " + err.message);
+            jqUnit.start();
+        });
     });
     //TODO: assert payloads sent to handlers
     //TODO: logout
