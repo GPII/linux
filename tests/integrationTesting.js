@@ -40,8 +40,8 @@ var integrationTestsJSON = {
                 }
             ]
         }
-    },
-    "carla": {
+    }, 
+    "nishaGeneric": {
         environments: {
             "gnome": [
                 {
@@ -49,21 +49,48 @@ var integrationTestsJSON = {
                     "data": [
                         {
                             "options": {
-                                "schema": "org.gnome.desktop.a11y.magnifier"
+                                "schema": "org.gnome.desktop.a11y.keyboard"
                             },
                             "settings": {
-                                "show-cross-hairs": true,
-                                "lens-mode": false,
-                                "mag-factor": 2,
-                                "mouse-tracking": "proportional",
-                                "screen-position": "right-half",
-                                "scroll-at-edges": true
+                                "stickykeys-enable": true,
+                                "slowkeys-enable": true,
+                                "slowkeys-delay": 400,
+                                "bouncekeys-enable": true,
+                                "bouncekeys-delay": 200,
+                                "mousekeys-enable": true,
+                                "mousekeys-init-delay": 120,
+                                "mousekeys-max-speed": 850,
+                                "mousekeys-accel-time": 800
                             }
                         }
                     ]
                 }
             ]
         }
+    // },   
+    // "carla": {
+    //     environments: {
+    //         "gnome": [
+    //             {
+    //                 "type": "gpii.gsettings.get", 
+    //                 "data": [
+    //                     {
+    //                         "options": {
+    //                             "schema": "org.gnome.desktop.a11y.magnifier"
+    //                         },
+    //                         "settings": {
+    //                             "show-cross-hairs": true,
+    //                             "lens-mode": false,
+    //                             "mag-factor": 2,
+    //                             "mouse-tracking": "proportional",
+    //                             "screen-position": "right-half",
+    //                             "scroll-at-edges": true
+    //                         }
+    //                     }
+    //                 ]
+    //             }
+    //         ]
+    //     }
     }
 };
 
@@ -146,7 +173,7 @@ var integrationTestsJSON = {
                                     //check each setting:
                                     fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
                                         var expectedValue = testBlock.data[arrayInd].settings[settingKey];
-                                        jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
+                                        jqUnit.assertEquals("Check setting "+settingKey, expectedValue, settingValue);
                                         //fluid.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
                                     });
                                 });
@@ -197,7 +224,7 @@ var integrationTestsJSON = {
                                     //check each setting:
                                     fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
                                         var expectedValue = testBlock.data[arrayInd].settings[settingKey];
-                                        jqUnit.assertEquals("Check setting "+settingKey, settingValue, expectedValue);
+                                        jqUnit.assertEquals("Check setting "+settingKey, expectedValue, settingValue);
                                         //fluid.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
                                     });
                                 });
