@@ -14,7 +14,34 @@ https://github.com/gpii/universal/LICENSE.txt
 /*global require, setTimeout */
 
 var integrationTestsJSON = {
-    "sammy": {
+    // "sammy": {
+    //     environments: {
+    //         "gnome": [
+    //             {
+    //                 "type": "gpii.gsettings.get", 
+    //                 "data": [
+    //                     {
+    //                         "options": {
+    //                             "schema": "org.gnome.desktop.a11y.applications"
+    //                         },
+    //                         "settings": {
+    //                             "screen-magnifier-enabled": true
+    //                         }
+    //                     },
+    //                     {
+    //                         "options": {
+    //                             "schema": "org.gnome.desktop.a11y.magnifier"
+    //                         },
+    //                         "settings": {
+    //                             "mag-factor": 2.0
+    //                         }
+    //                     }
+    //                 ]
+    //             }
+    //         ]
+    //     }
+    // }, 
+    "MikelVargas": {
         environments: {
             "gnome": [
                 {
@@ -25,28 +52,9 @@ var integrationTestsJSON = {
                                 "schema": "org.gnome.desktop.a11y.applications"
                             },
                             "settings": {
-                                "screen-magnifier-enabled": true
+                                "screen-keyboard-enabled": true
                             }
                         },
-                        {
-                            "options": {
-                                "schema": "org.gnome.desktop.a11y.magnifier"
-                            },
-                            "settings": {
-                                "mag-factor": 2.0
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    }, 
-    "nishaGeneric": {
-        environments: {
-            "gnome": [
-                {
-                    "type": "gpii.gsettings.get", 
-                    "data": [
                         {
                             "options": {
                                 "schema": "org.gnome.desktop.a11y.keyboard"
