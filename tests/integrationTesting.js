@@ -182,7 +182,6 @@ var integrationTestsJSON = {
                                     fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
                                         var expectedValue = testBlock.data[arrayInd].settings[settingKey];
                                         jqUnit.assertEquals("Check setting "+settingKey, expectedValue, settingValue);
-                                        //fluid.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
                                     });
                                 });
                                 jqUnit.start(); 
@@ -225,15 +224,12 @@ var integrationTestsJSON = {
                             setTimeout(function() {
                                 //call the settingshandler to get the settings
                                 var changedSettings = fluid.invokeGlobalFunction(testBlock.type, [args]);
-                                // fluid.log(JSON.stringify(args));
-                                // fluid.log("TMP: "+JSON.stringify(changedSettings));
                                 //go through each of the settings to compare them:
                                 fluid.each(changedSettings[token], function (arrayEntry, arrayInd) {
                                     //check each setting:
                                     fluid.each(arrayEntry.settings, function (settingValue, settingKey) {
                                         var expectedValue = testBlock.data[arrayInd].settings[settingKey];
                                         jqUnit.assertEquals("Check setting "+settingKey, expectedValue, settingValue);
-                                        //fluid.log("Expected for "+settingKey+": "+expectedValue+" vs "+settingValue);
                                     });
                                 });
                                 jqUnit.start(); 
