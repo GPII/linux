@@ -14,34 +14,74 @@ https://github.com/gpii/universal/LICENSE.txt
 /*global require, setTimeout */
 
 var integrationTestsJSON = {
-    // "sammy": {
-    //     environments: {
-    //         "gnome": [
-    //             {
-    //                 "type": "gpii.gsettings.get", 
-    //                 "data": [
-    //                     {
-    //                         "options": {
-    //                             "schema": "org.gnome.desktop.a11y.applications"
-    //                         },
-    //                         "settings": {
-    //                             "screen-magnifier-enabled": true
-    //                         }
-    //                     },
-    //                     {
-    //                         "options": {
-    //                             "schema": "org.gnome.desktop.a11y.magnifier"
-    //                         },
-    //                         "settings": {
-    //                             "mag-factor": 2.0
-    //                         }
-    //                     }
-    //                 ]
-    //             }
-    //         ]
-    //     }
-    // }, 
-    // },   
+    "sammy": {
+       "initialState": [
+            {
+                "type": "gpii.gsettings.get", 
+                "data": [
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.applications"
+                        },
+                        "settings": {
+                            "screen-magnifier-enabled": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.magnifier"
+                        },
+                        "settings": {
+                            "mag-factor": 2.5,
+                            "mouse-tracking": "none",
+                            "show-cross-hairs": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "loggedInState": [
+            {
+                "type": "gpii.gsettings.get", 
+                "data": [
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.applications"
+                        },
+                        "settings": {
+                            "screen-magnifier-enabled": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.magnifier"
+                        },
+                        "settings": {
+                            "mag-factor": 2.0,
+                            "mouse-tracking": "centered",
+                            "show-cross-hairs": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 2
+                        }
+                    }
+                ]
+            }
+        ]
+    },   
     "carla": {
         "initialState": [
             {
@@ -65,6 +105,14 @@ var integrationTestsJSON = {
                             "mouse-tracking": "centered",
                             "screen-position": "left-half",
                             "scroll-at-edges": false
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 1
                         }
                     }
                 ]
@@ -92,6 +140,14 @@ var integrationTestsJSON = {
                             "mouse-tracking": "proportional",
                             "screen-position": "right-half",
                             "scroll-at-edges": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 2
                         }
                     }
                 ]
@@ -249,7 +305,7 @@ var integrationTestsJSON = {
 
     gpii.flowManager();
     var tokenQueue = Object.keys(integrationTestsJSON);
-
+    
     var testNextToken = function() {
         if (tokenQueue.length === 0) 
             return;
@@ -258,31 +314,28 @@ var integrationTestsJSON = {
         var json = integrationTestsJSON[token];
 
         //Setup and check an initial known state:
+        //Made asynchronous due to qunit bug that doesn't allow synchronous tests
         integrationTester.asyncTest("Set up initial state", function() {
             setSettings(json.initialState);
-            checkSettings(json.initialState);
             setTimeout(function() {
+                checkSettings(json.initialState);
                 jqUnit.start();
-            }, 10);
+            }, 1);
         });
 
         //test login:
         addRESTTest(token, "login", function (data) {
-            jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
-            setTimeout(function() {
-                checkSettings(json.loggedInState);
-                //test logout:
-                addRESTTest(token, "logout", function (data) {
-                    jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
-                    setTimeout(function() {
-                        checkSettings(json.initialState);
-                        //let the system know we're ready for another test:
-                        testNextToken();
-                        jqUnit.start();
-                    }, 2000);
-                });
+        jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
+            checkSettings(json.loggedInState);
+            //test logout:
+            addRESTTest(token, "logout", function (data) {
+                jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
+                checkSettings(json.initialState);
+                //let the system know we're ready for another test:
+                testNextToken();
                 jqUnit.start();
-            }, 2000);
+            });
+            jqUnit.start();
         });
     };
 
