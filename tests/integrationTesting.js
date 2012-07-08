@@ -217,7 +217,153 @@ var integrationTestsJSON = {
                 ]
             }
         ]
-    }   
+    },
+    "nisha": {
+        "initialState": [
+            {
+                "type": "gpii.gsettings.get", 
+                "data": [
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.applications"
+                        },
+                        "settings": {
+                            "screen-keyboard-enabled": false
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.keyboard"
+                        },
+                        "settings": {
+                            "stickykeys-enable": false,
+                            "enable": false,
+                            "bouncekeys-enable": false,
+                            "bouncekeys-delay": 100,
+                            "mousekeys-enable": false,
+                            "mousekeys-init-delay": 100,
+                            "mousekeys-max-speed": 100,
+                            "mousekeys-accel-time": 100,
+                            "slowkeys-enable": false,
+                            "togglekeys-enable": false
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "loggedInState": [
+            {
+                "type": "gpii.gsettings.get", 
+                "data": [
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.applications"
+                        },
+                        "settings": {
+                            "screen-keyboard-enabled": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.keyboard"
+                        },
+                        "settings": {
+                            "stickykeys-enable": true,
+                            "enable": true,
+                            "bouncekeys-enable": true,
+                            "bouncekeys-delay": 300,
+                            "mousekeys-enable": true,
+                            "mousekeys-init-delay": 120,
+                            "mousekeys-max-speed": 850,
+                            "mousekeys-accel-time": 800,
+                            "slowkeys-enable": true,
+                            "togglekeys-enable": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 1
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "andrei": {
+        "initialState": [
+            {
+                "type": "gpii.gsettings.get", 
+                "data": [
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.applications"
+                        },
+                        "settings": {
+                            "screen-reader-enabled": false
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.keyboard"
+                        },
+                        "settings": {
+                            "feature-state-change-beep": false
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "loggedInState": [
+            {
+                "type": "gpii.gsettings.get", 
+                "data": [
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.applications"
+                        },
+                        "settings": {
+                            "screen-reader-enabled": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.a11y.keyboard"
+                        },
+                        "settings": {
+                            "feature-state-change-beep": true
+                        }
+                    },
+                    {
+                        "options": {
+                            "schema": "org.gnome.desktop.interface"
+                        },
+                        "settings": {
+                            "text-scaling-factor": 1
+                        }
+                    }
+                ]
+            }
+        ]
+    }
 };
 
 (function () {
