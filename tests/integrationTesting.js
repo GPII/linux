@@ -241,9 +241,9 @@ var integrationTestsJSON = {
         //go through each of the settings
         fluid.each(json, function (handlerBlock, handlerIndex) {
             var args = {};
-            args["setting"] = handlerBlock.data;
+            args.setting = handlerBlock.data;
             var setter = handlerBlock.type.substr(0, handlerBlock.type.indexOf(".get"))+".set";
-            var response = fluid.invokeGlobalFunction(setter, [args]);
+            fluid.invokeGlobalFunction(setter, [args]);
         });
     };
 
@@ -257,17 +257,17 @@ var integrationTestsJSON = {
         fluid.each(expected, function (handlerBlock, handlerIndex) {
             //first get the settings from the system
             var args = {};
-            args["checking"] = handlerBlock.data;
+            args.checking = handlerBlock.data;
             var response = fluid.invokeGlobalFunction(handlerBlock.type, [args]);
             //check that these corresponds to the one we anted to set:
             fluid.each(handlerBlock.data, function (solutionBlock, solutionIndex) {
                 //check each setting:
                 fluid.each(solutionBlock.settings, function (expectedValue, settingKey) {
-                    var responseValue = response["checking"][solutionIndex].settings[settingKey];
+                    var responseValue = response.checking[solutionIndex].settings[settingKey];
                     jqUnit.assertEquals("Check setting "+settingKey, expectedValue, responseValue);
                 });
             });
-        })
+        });
     };
 
     var addRESTTest = function(token, action, onEnd) {
@@ -307,8 +307,9 @@ var integrationTestsJSON = {
     var tokenQueue = Object.keys(integrationTestsJSON);
     
     var testNextToken = function() {
-        if (tokenQueue.length === 0) 
+        if (tokenQueue.length === 0) {
             return;
+        }
 
         var token = tokenQueue.pop();
         var json = integrationTestsJSON[token];
