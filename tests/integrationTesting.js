@@ -21,14 +21,6 @@ var integrationTestsJSON = {
                 "data": [
                     {
                         "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-magnifier-enabled": true
-                        }
-                    },
-                    {
-                        "options": {
                             "schema": "org.gnome.desktop.a11y.magnifier"
                         },
                         "settings": {
@@ -89,13 +81,6 @@ var integrationTestsJSON = {
                 "data": [
                     {
                         "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-magnifier-enabled": false
-                        }
-                    }, {
-                        "options": {
                             "schema": "org.gnome.desktop.a11y.magnifier"
                         },
                         "settings": {
@@ -153,216 +138,216 @@ var integrationTestsJSON = {
                 ]
             }
         ]
-    },
-    "MikelVargas": {
-        "initialState": [
-            {
-                "type": "gpii.gsettings.get",
-                "data": [
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-keyboard-enabled": false
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.keyboard"
-                        },
-                        "settings": {
-                            "stickykeys-enable": false,
-                            "slowkeys-enable": false,
-                            "slowkeys-delay": 100,
-                            "bouncekeys-enable": false,
-                            "bouncekeys-delay": 100,
-                            "mousekeys-enable": false,
-                            "mousekeys-init-delay": 100,
-                            "mousekeys-max-speed": 100,
-                            "mousekeys-accel-time": 100
-                        }
-                    }
-                ]
-            }
-        ],
-        "loggedInState": [
-            {
-                "type": "gpii.gsettings.get", 
-                "data": [
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-keyboard-enabled": true
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.keyboard"
-                        },
-                        "settings": {
-                            "stickykeys-enable": true,
-                            "slowkeys-enable": true,
-                            "slowkeys-delay": 400,
-                            "bouncekeys-enable": true,
-                            "bouncekeys-delay": 200,
-                            "mousekeys-enable": true,
-                            "mousekeys-init-delay": 120,
-                            "mousekeys-max-speed": 850,
-                            "mousekeys-accel-time": 800
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    "nisha": {
-        "initialState": [
-            {
-                "type": "gpii.gsettings.get", 
-                "data": [
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-keyboard-enabled": false
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.keyboard"
-                        },
-                        "settings": {
-                            "stickykeys-enable": false,
-                            "enable": false,
-                            "bouncekeys-enable": false,
-                            "bouncekeys-delay": 100,
-                            "mousekeys-enable": false,
-                            "mousekeys-init-delay": 100,
-                            "mousekeys-max-speed": 100,
-                            "mousekeys-accel-time": 100,
-                            "slowkeys-enable": false,
-                            "togglekeys-enable": false
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.interface"
-                        },
-                        "settings": {
-                            "text-scaling-factor": 1
-                        }
-                    }
-                ]
-            }
-        ],
-        "loggedInState": [
-            {
-                "type": "gpii.gsettings.get", 
-                "data": [
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-keyboard-enabled": true
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.keyboard"
-                        },
-                        "settings": {
-                            "stickykeys-enable": true,
-                            "enable": true,
-                            "bouncekeys-enable": true,
-                            "bouncekeys-delay": 300,
-                            "mousekeys-enable": true,
-                            "mousekeys-init-delay": 120,
-                            "mousekeys-max-speed": 850,
-                            "mousekeys-accel-time": 800,
-                            "slowkeys-enable": true,
-                            "togglekeys-enable": true
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.interface"
-                        },
-                        "settings": {
-                            "text-scaling-factor": 1
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    "andrei": {
-        "initialState": [
-            {
-                "type": "gpii.gsettings.get", 
-                "data": [
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-reader-enabled": false
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.keyboard"
-                        },
-                        "settings": {
-                            "feature-state-change-beep": false
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.interface"
-                        },
-                        "settings": {
-                            "text-scaling-factor": 1
-                        }
-                    }
-                ]
-            }
-        ],
-        "loggedInState": [
-            {
-                "type": "gpii.gsettings.get", 
-                "data": [
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.applications"
-                        },
-                        "settings": {
-                            "screen-reader-enabled": true
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.a11y.keyboard"
-                        },
-                        "settings": {
-                            "feature-state-change-beep": true
-                        }
-                    },
-                    {
-                        "options": {
-                            "schema": "org.gnome.desktop.interface"
-                        },
-                        "settings": {
-                            "text-scaling-factor": 1
-                        }
-                    }
-                ]
-            }
-        ]
+   // },
+    // "MikelVargas": {
+    //     "initialState": [
+    //         {
+    //             "type": "gpii.gsettings.get",
+    //             "data": [
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.applications"
+    //                     },
+    //                     "settings": {
+    //                         "screen-keyboard-enabled": false
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.keyboard"
+    //                     },
+    //                     "settings": {
+    //                         "stickykeys-enable": false,
+    //                         "slowkeys-enable": false,
+    //                         "slowkeys-delay": 100,
+    //                         "bouncekeys-enable": false,
+    //                         "bouncekeys-delay": 100,
+    //                         "mousekeys-enable": false,
+    //                         "mousekeys-init-delay": 100,
+    //                         "mousekeys-max-speed": 100,
+    //                         "mousekeys-accel-time": 100
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ],
+    //     "loggedInState": [
+    //         {
+    //             "type": "gpii.gsettings.get", 
+    //             "data": [
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.applications"
+    //                     },
+    //                     "settings": {
+    //                         "screen-keyboard-enabled": true
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.keyboard"
+    //                     },
+    //                     "settings": {
+    //                         "stickykeys-enable": true,
+    //                         "slowkeys-enable": true,
+    //                         "slowkeys-delay": 400,
+    //                         "bouncekeys-enable": true,
+    //                         "bouncekeys-delay": 200,
+    //                         "mousekeys-enable": true,
+    //                         "mousekeys-init-delay": 120,
+    //                         "mousekeys-max-speed": 850,
+    //                         "mousekeys-accel-time": 800
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ]
+    // },
+    // "nisha": {
+    //     "initialState": [
+    //         {
+    //             "type": "gpii.gsettings.get", 
+    //             "data": [
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.applications"
+    //                     },
+    //                     "settings": {
+    //                         "screen-keyboard-enabled": false
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.keyboard"
+    //                     },
+    //                     "settings": {
+    //                         "stickykeys-enable": false,
+    //                         "enable": false,
+    //                         "bouncekeys-enable": false,
+    //                         "bouncekeys-delay": 100,
+    //                         "mousekeys-enable": false,
+    //                         "mousekeys-init-delay": 100,
+    //                         "mousekeys-max-speed": 100,
+    //                         "mousekeys-accel-time": 100,
+    //                         "slowkeys-enable": false,
+    //                         "togglekeys-enable": false
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.interface"
+    //                     },
+    //                     "settings": {
+    //                         "text-scaling-factor": 1
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ],
+    //     "loggedInState": [
+    //         {
+    //             "type": "gpii.gsettings.get", 
+    //             "data": [
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.applications"
+    //                     },
+    //                     "settings": {
+    //                         "screen-keyboard-enabled": true
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.keyboard"
+    //                     },
+    //                     "settings": {
+    //                         "stickykeys-enable": true,
+    //                         "enable": true,
+    //                         "bouncekeys-enable": true,
+    //                         "bouncekeys-delay": 300,
+    //                         "mousekeys-enable": true,
+    //                         "mousekeys-init-delay": 120,
+    //                         "mousekeys-max-speed": 850,
+    //                         "mousekeys-accel-time": 800,
+    //                         "slowkeys-enable": true,
+    //                         "togglekeys-enable": true
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.interface"
+    //                     },
+    //                     "settings": {
+    //                         "text-scaling-factor": 1
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ]
+    // },
+    // "andrei": {
+    //     "initialState": [
+    //         {
+    //             "type": "gpii.gsettings.get", 
+    //             "data": [
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.applications"
+    //                     },
+    //                     "settings": {
+    //                         "screen-reader-enabled": false
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.keyboard"
+    //                     },
+    //                     "settings": {
+    //                         "feature-state-change-beep": false
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.interface"
+    //                     },
+    //                     "settings": {
+    //                         "text-scaling-factor": 1
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ],
+    //     "loggedInState": [
+    //         {
+    //             "type": "gpii.gsettings.get", 
+    //             "data": [
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.applications"
+    //                     },
+    //                     "settings": {
+    //                         "screen-reader-enabled": true
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.a11y.keyboard"
+    //                     },
+    //                     "settings": {
+    //                         "feature-state-change-beep": true
+    //                     }
+    //                 },
+    //                 {
+    //                     "options": {
+    //                         "schema": "org.gnome.desktop.interface"
+    //                     },
+    //                     "settings": {
+    //                         "text-scaling-factor": 1
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     ]
     }
 };
 
@@ -398,21 +383,15 @@ var integrationTestsJSON = {
     * should contain the expected value, and they should be in the format of the contant
     * of 'initialState'
     */
-    var checkSettings = function (expected) {
+    var checkSettings = function (expected, description) {
         //go through each of the settings
         fluid.each(expected, function (handlerBlock, handlerIndex) {
             //first get the settings from the system
             var args = {};
             args.checking = handlerBlock.data;
             var response = fluid.invokeGlobalFunction(handlerBlock.type, [args]);
-            //check that these corresponds to the one we anted to set:
-            fluid.each(handlerBlock.data, function (solutionBlock, solutionIndex) {
-                //check each setting:
-                fluid.each(solutionBlock.settings, function (expectedValue, settingKey) {
-                    var responseValue = response.checking[solutionIndex].settings[settingKey];
-                    jqUnit.assertEquals("Check setting "+settingKey, expectedValue, responseValue);
-                });
-            });
+            //check that these corresponds to the one we anted to set:s
+            jqUnit.assertDeepEq("Settings should match: " + description, handlerBlock.data, response.checking);
         });
     };
 
@@ -465,24 +444,28 @@ var integrationTestsJSON = {
         integrationTester.asyncTest("Set up initial state", function() {
             setSettings(json.initialState);
             setTimeout(function() {
-                checkSettings(json.initialState);
+                checkSettings(json.initialState, token + " profile initial state");
                 jqUnit.start();
             }, 1);
         });
 
         //test login:
         addRESTTest(token, "login", function (data) {
-        jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
-            checkSettings(json.loggedInState);
-            //test logout:
-            addRESTTest(token, "logout", function (data) {
-                jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
-                checkSettings(json.initialState);
-                //let the system know we're ready for another test:
-                testNextToken();
+            jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
+            setTimeout(function() {
+                checkSettings(json.loggedInState, token + " logged in.");
+                //test logout:
+                addRESTTest(token, "logout", function (data) {
+                    jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
+                    setTimeout(function() {
+                        checkSettings(json.initialState, token + " back to initial state");
+                        //let the system know we're ready for another test: 
+                        testNextToken();
+                        jqUnit.start();
+                    }, 1000);
+                });
                 jqUnit.start();
-            });
-            jqUnit.start();
+            }, 1000);
         });
     };
 
