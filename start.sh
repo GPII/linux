@@ -16,4 +16,4 @@ fileName="gpii.js"
 ./build.sh
 
 # Start the Flow Manager
-node "$fileName"
+node "$fileName" $1

@@ -15,4 +15,7 @@ var fluid = require("universal"),
 
 fluid.require("gsettingsBridge", require);
 
-gpii.flowManager();
+gpii.config.makeConfigLoader({
+    nodeEnv: gpii.config.getNodeEnv(),
+    configPath: gpii.config.getConfigPath()
+});
