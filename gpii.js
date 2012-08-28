@@ -17,5 +17,5 @@ fluid.require("gsettingsBridge", require);
 
 gpii.config.makeConfigLoader({
     nodeEnv: gpii.config.getNodeEnv(),
-    configPath: gpii.config.getConfigPath() || "../node_modules/universal/gpii/node_modules/flowManager/configs";
+    configPath: gpii.config.getConfigPath() || "../node_modules/universal/gpii/node_modules/flowManager/configs"
 });
