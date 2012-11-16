@@ -10,12 +10,14 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
+/*global __dirname */
+
 var fluid = require("universal"),
     gpii = fluid.registerNamespace("gpii");
 
 fluid.require("gsettingsBridge", require);
 
 gpii.config.makeConfigLoader({
-    nodeEnv: gpii.config.getNodeEnv(),
-    configPath: gpii.config.getConfigPath() || "../node_modules/universal/gpii/node_modules/flowManager/configs"
+    nodeEnv: gpii.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
+    configPath: gpii.config.getConfigPath() || "../node_modules/universal/gpii/configs"
 });
