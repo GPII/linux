@@ -10,8 +10,6 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
-/*global __dirname */
-
 var fluid = require("universal"),
     gpii = fluid.registerNamespace("gpii");
 
