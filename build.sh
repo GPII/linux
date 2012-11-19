@@ -36,7 +36,7 @@ fi
 
 # Compile the GSettings C++ Bridge
 cd node_modules/gsettingsBridge/nodegsettings
-node-waf configure build
+node-gyp configure build
 cd ../../..
 
 # Create standard directory structure for GPII.

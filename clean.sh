@@ -11,9 +11,8 @@
 # https://github.com/gpii/universal/LICENSE.txt
 
 cd node_modules/gsettingsBridge/nodegsettings
-node-waf clean
+node-gyp clean
 rm -rf build
-rm .lock-wscript
 cd ../../..
 
 sudo rm -rf /usr/local/gpii
