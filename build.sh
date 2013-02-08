@@ -13,9 +13,11 @@
 node_modules="../node_modules"
 universal="../node_modules/universal"
 repoURL="git://github.com/GPII/universal.git" 
+tag="tags/v0.1"
 usbListenerDir="./usbDriveListener"
 gpiiInstallDir="/usr/local/gpii"
 gpiiStateDir="/var/lib/gpii"
+startDir=`pwd`
 
 # Clone the necessary GPII framework dependencies from Git.
 # TODO: Deal with cut and pastage for directory creation logic.
@@ -32,6 +34,9 @@ else
     echo "$universal does not exist"
     echo "cloning universal"
     git clone "$repoURL" "$universal"
+    cd $universal
+    git checkout $tag
+    cd $startDir
 fi
 
 # Compile the GSettings C++ Bridge
