@@ -10,9 +10,10 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
+currentDirName=${PWD##*/}
 node_modules="../node_modules"
 universal="../node_modules/universal"
-repoURL="git://github.com/GPII/universal.git" 
+repoURL="git://github.com/GPII/universal.git"
 usbListenerDir="./usbDriveListener"
 gpiiInstallDir="/usr/local/gpii"
 gpiiStateDir="/var/lib/gpii"
@@ -32,6 +33,10 @@ else
     echo "$universal does not exist"
     echo "cloning universal"
     git clone "$repoURL" "$universal"
+    cd $universal
+    npm install
+    cd ../../
+    cd $currentDirName
 fi
 
 # Compile the GSettings C++ Bridge
