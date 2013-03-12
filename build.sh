@@ -10,7 +10,7 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
-currentDirName=${PWD##*/}
+currentDir=`pwd`
 node_modules="../node_modules"
 universal="../node_modules/universal"
 repoURL="git://github.com/GPII/universal.git"
@@ -35,8 +35,7 @@ else
     git clone "$repoURL" "$universal"
     cd $universal
     npm install
-    cd ../../
-    cd $currentDirName
+    cd $currentDir
 fi
 
 # Compile the GSettings C++ Bridge
