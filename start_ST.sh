@@ -10,7 +10,7 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
-export NODE_ENV="deployment.statistical.mm"
+export NODE_ENV="statistical.mm.production"
 
 fileName="gpii.js"
 
