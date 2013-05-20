@@ -1,2 +1,2 @@
-KERNEL=="sd[a-z][0-9]", SUBSYSTEM=="block", SUBSYSTEMS=="usb", ACTION=="add", RUN+="/usr/local/gpii/bin/trigger.sh 1 /dev/%k"
-KERNEL=="sd[a-z][0-9]", SUBSYSTEM=="block", SUBSYSTEMS=="usb", ACTION=="remove", RUN+="/usr/local/gpii/bin/trigger.sh 0 /dev/%k"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", SUBSYSTEMS=="usb", ACTION=="add", RUN+="/usr/local/gpii/bin/trigger.sh 1 /dev/%k"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", SUBSYSTEMS=="usb", ACTION=="remove", RUN+="/usr/local/gpii/bin/trigger.sh 0 /dev/%k"
