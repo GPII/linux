@@ -13,70 +13,6 @@ https://github.com/gpii/universal/LICENSE.txt
 
 /*global require */
 
-// var integrationTestsJSON = {
-//     "sammy": {
-//        "initialState": [
-//             {
-//                 "type": "gpii.gsettings.get", 
-//                 "data": [
-//                     {
-//                         "options": {
-//                             "schema": "org.gnome.desktop.a11y.magnifier"
-//                         },
-//                         "settings": {
-//                             "mag-factor": 2.5,
-//                             "mouse-tracking": "none",
-//                             "show-cross-hairs": true
-//                         }
-//                     },
-//                     {
-//                         "options": {
-//                             "schema": "org.gnome.desktop.interface"
-//                         },
-//                         "settings": {
-//                             "text-scaling-factor": 1
-//                         }
-//                     }
-//                 ]
-//             }
-//         ],
-//         "loggedInState": [
-//             {
-//                 "type": "gpii.gsettings.get", 
-//                 "data": [
-//                     {
-//                         "options": {
-//                             "schema": "org.gnome.desktop.a11y.applications"
-//                         },
-//                         "settings": {
-//                             "screen-magnifier-enabled": true
-//                         }
-//                     },
-//                     {
-//                         "options": {
-//                             "schema": "org.gnome.desktop.a11y.magnifier"
-//                         },
-//                         "settings": {
-//                             "mag-factor": 2.0,
-//                             "mouse-tracking": "centered",
-//                             "show-cross-hairs": true
-//                         }
-//                     },
-//                     {
-//                         "options": {
-//                             "schema": "org.gnome.desktop.interface"
-//                         },
-//                         "settings": {
-//                             "text-scaling-factor": 2
-//                         }
-//                     }
-//                 ]
-//             }
-//         ]
-//     }
-
-
-
 var tests = [
     {
         name: "Testing Mikel Vargas using Flat matchmaker (onscreen keyboard)",
@@ -115,55 +51,65 @@ var tests = [
 
     //require("testFramework");
     require("../../node_modules/universal/gpii/node_modules/testFramework/gpiiTests.js");
-    //require("settingsHandlers");
     require("gsettingsBridge");
+
     var integrationTesting = gpii.tests.testEnvironment();
 
     jqUnit.module("Integration Testing");
     
     var currentTest = tests[0];
 
+    var extractPayloads = function (test) {
+        var settingsHandlers = test.settingsHandlers;
+        var payloads = {
+            init: fluid.copy(settingsHandlers),
+            get: fluid.copy(settingsHandlers),
+            expect: fluid.copy(settingsHandlers)
+        };
+
+        fluid.each(settingsHandlers, function (handlerBlock, handlerID) {
+            fluid.each(handlerBlock, function (hbArray, hbHeader) {
+                fluid.each(hbArray, function (handlerEntry, index) {
+                    var settings = handlerEntry.settings;
+                    var initBlock = {};
+                    var getBlock = {};
+                    var expectBlock = {};
+
+                    fluid.each(settings, function (val, key) {
+                        initBlock[key] = val.init;
+                        getBlock[key] = null;
+                        expectBlock[key] = val.expect;
+                    });
+                    
+                    payloads.init[handlerID][hbHeader][index] = { options: handlerEntry.options, settings: initBlock };
+                    payloads.get[handlerID][hbHeader][index] = { options: handlerEntry.options, settings: getBlock };
+                    payloads.expect[handlerID][hbHeader][index] = { options: handlerEntry.options, settings: expectBlock };
+                });  
+            });
+        });
+        return payloads;
+    };
+
     /*
     * Sets the settings given in the json paramater. The content of the json passed
     * is the values to set in a format similar to the content of 'initialState'
     */
-    var initSettings = function (handler, payload) {
-        payload = fluid.copy(payload);
-        
-        var initPayload = fluid.transform(payload, function (data) {
-            return fluid.transform(data, function (handlerEntry) {
-                var settings = handlerEntry.settings;
-
-                var initSettingsBlock = fluid.transform(settings, function (setting) {
-                    return setting.init;
-                });
-                return { options: handlerEntry.options, settings: initSettingsBlock };
-            });  
+    var callHandlers = function (payload, action) {
+        var ret = {};
+        fluid.each(payload, function (handlerBlock, handlerID) {
+            ret[handlerID]=fluid.invokeGlobalFunction(handlerID+"."+action, [handlerBlock]);
         });
-
-         var gottentSettings = fluid.invokeGlobalFunction(handler+".set", [initPayload]);
-        console.log(JSON.stringify(gottentSettings));
+        return ret;
     };
 
-    integrationTesting.asyncTest("Integration Tester", function () {
-        //set initial settings
-        initSettings("gpii.gsettings", currentTest.settingsHandlers["gpii.gsettings"]);
-    
-        //start up server
-        gpii.config.makeConfigLoader({
-            "nodeEnv": "development-config",
-            "configPath": __dirname+"/integrationTests/setup1/configs"
-        });
-        fluid.log("SERVER STARTED");
-
-        //log user in:
+    var addRESTTest = function(token, action, onEnd) {
         http.get({
             host: "localhost",
             port: 8081,
-            path: "/user/"+currentTest.token+"/login"
+            path: "/user/"+token+"/"+action
         }, function(response) {
             var data = "";
-            fluid.log("Callback from use login called");
+            fluid.log("Callback from "+action+" called");
 
             response.on("data", function (chunk) {
                 fluid.log("Response from server: " + chunk);
@@ -171,193 +117,58 @@ var tests = [
             });
             response.on("close", function(err) {
                 if (err) {
-                    jqUnit.assertFalse("Got an error on login: " + err.message, true);
+                    jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);
                     jqUnit.start();
                 }
                 fluid.log("Connection to the server was closed");
             });
             response.on("end", function() {
                 fluid.log("Connection to server ended");
-                jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+currentTest.token+" was successfully logged in."), -1);
-                http.get({
-                    host: "localhost",
-                    port: 8081,
-                    path: "/user/"+currentTest.token+"/logout"
-                });
-                jqUnit.start();
+                onEnd(data);
             });
         }).on('error', function(err) {
             fluid.log("Got error: " + err.message);
             jqUnit.start();
         });
-    });
-    // integrationTesting.test("Integration Tester", function () {
-    //     fluid.log("Integration Testing started");
-    //     //start up server
-    //     gpii.flowManager();
-
-    //     //set initial settings:
-
-    //     gpii.config.makeConfigLoader({
-    //         nodeEnv: gpii.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
-    //         configPath: gpii.config.getConfigPath() || "../node_modules/universal/gpii/configs"
-    //     });
-    // });
-
-//     /*
-//     * Sets the settings given in the json paramater. The content of the json passed
-//     * is the values to set in a format similar to the content of 'initialState'
-//     */
-//     var setSettings = function (json) {
-//         //go through each of the settings
-//         fluid.each(json, function (handlerBlock, handlerIndex) {
-//             var args = {};
-//             args.setting = handlerBlock.data;
-//             var setter = handlerBlock.type.substr(0, handlerBlock.type.indexOf(".get"))+".set";
-//             fluid.invokeGlobalFunction(setter, [args]);
-//         });
-//     };
-
-//     /*
-//     * Checks the settings given in the json paramater. The content of the json passed
-//     * should contain the expected value, and they should be in the format of the contant
-//     * of 'initialState'
-//     */
-//     var checkSettings = function (expected, description) {
-//         //go through each of the settings
-//         fluid.each(expected, function (handlerBlock, handlerIndex) {
-//             //first get the settings from the system
-//             var args = {};
-//             args.checking = handlerBlock.data;
-//             var response = fluid.invokeGlobalFunction(handlerBlock.type, [args]);
-//             //check that these corresponds to the one we anted to set:s
-//             jqUnit.assertDeepEq("Settings should match: " + description, handlerBlock.data, response.checking);
-//         });
-//     };
-
-//     var addRESTTest = function(token, action, onEnd) {
-//         //test login with token
-//         integrationTester.asyncTest("Test "+token+" "+action, function () {
-//             http.get({
-//                 host: "localhost",
-//                 port: 8081,
-//                 path: "/user/"+token+"/"+action
-//             }, function(response) {
-//                 var data = "";
-//                 fluid.log("Callback from use "+action+" called");
-
-//                 response.on("data", function (chunk) {
-//                     fluid.log("Response from server: " + chunk);
-//                     data += chunk;
-//                 });
-//                 response.on("close", function(err) {
-//                     if (err) {
-//                         jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);
-//                         jqUnit.start();
-//                     }
-//                     fluid.log("Connection to the server was closed");
-//                 });
-//                 response.on("end", function() {
-//                     fluid.log("Connection to server ended");
-//                     onEnd(data);
-//                 });
-//             }).on('error', function(err) {
-//                 fluid.log("Got error: " + err.message);
-//                 jqUnit.start();
-//             });
-//         });
-//     };
-
-//     gpii.flowManager();
-//     var tokenQueue = Object.keys(integrationTestsJSON);
+    };
     
-//     var testNextToken = function() {
-//         if (tokenQueue.length === 0) {
-//             return;
-//         }
+    integrationTesting.asyncTest("Integration Tester", function () {
+        //extract the payloads we need from test:
+        var payloads = extractPayloads(currentTest);
 
-//         var token = tokenQueue.pop();
-//         var json = integrationTestsJSON[token];
+        //set initial settings
+        callHandlers(payloads.init, "set");
+        //and check that they are properly set
+        var returned = callHandlers(payloads.get, "get");
+        jqUnit.assertDeepEq("Checking that initial settings are properly set", returned, payloads.init);
 
-//         //Setup and check an initial known state:
-//         //Made asynchronous due to qunit bug that doesn't allow synchronous tests
-//         integrationTester.asyncTest("Set up initial state", function() {
-//             setSettings(json.initialState);
-//             setTimeout(function() {
-//                 checkSettings(json.initialState, token + " profile initial state");
-//                 jqUnit.start();
-//             }, 1);
-//         });
+        //start up server
+        var currentGpii = gpii.config.makeConfigLoader({
+            "nodeEnv": "development-config",
+            "configPath": __dirname+"/integrationTests/setup1/configs"
+        });
+        fluid.log("SERVER STARTED");
 
-//         //test login:
-//         addRESTTest(token, "login", function (data) {
-//             jqUnit.assertNotEquals("Successful login message returned", data.indexOf("User was successfully logged in."), -1);
-//             setTimeout(function() {
-//                 checkSettings(json.loggedInState, token + " logged in.");
-//                 //test logout:
-//                 addRESTTest(token, "logout", function (data) {
-//                     jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
-//                     setTimeout(function() {
-//                         checkSettings(json.initialState, token + " back to initial state");
-//                         //let the system know we're ready for another test: 
-//                         testNextToken();
-//                         jqUnit.start();
-//                     }, 1000);
-//                 });
-//                 jqUnit.start();
-//             }, 1000);
-//         });
-//     };
+        currentGpii.server.flowManager.lifecycleManager.events.configurationApplied.addListener(function () {
+            var returned = callHandlers(payloads.get, "get");
+            jqUnit.assertDeepEq("Checking that settings are properly set", returned, payloads.expect);
+            //log out
+            addRESTTest(currentTest.token, "logout", function(data) {   
+                jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
+                console.log("So far, so good");
+                jqUnit.start();               
+            });
+        });
 
-//     testNextToken();
-// }());
-    // Integration test pseudo code:
-    // test A: {
-    //         name: "Screenreader user on windows",
-    //         config: "path.to.config.file",
-    //         token: "<token>",
-    //             settingsHandlers: [{
-    //                     type: "without get/set part",
-    //                     options: { options to pass the handler },
-    //                     settings: {
-    //                             Setting1: { 
-    //                                     init: { "initial value" },
-    //                                     expect: { "assert value after login" }
-    //                                 },
-    //                             ...,
-    //                             SettingN: ...
-    //                     },
-    //             }],
-    //             Processes: [{
-    //                     checkRunning: {
-    //                             command: "...",
-    //                             grep: "..."
-    //                     }
-    //             }]
-    //     }
-    // }
-    // For each test TestX:
-    //     For each settings handler SH in TestX
-    //             For each setting listed in expected section of SH
-    //             get the current value -> save
-    //     On (All settings gathered)
-    //         Start GPII
-    //     On (GPII started)
-    //         HTTP GET: localhost:8081/user/<token>/login
-    //     On (on user logged in)
-    //         For each settings handler SH in TestX
-    //             For each setting listed in expected section of SH
-    //                 check that the setting = expected
-    //         For each expected process
-    //             Check running processes, compare to expected
-    //         HTTP GET: localhost:8081/user/<token>/logout
-    //     On (User logged out)
-    //         For each settings handler SH in TestX
-    //             For each setting listed in expected section of SH
-    //                 check that the setting = original setting
-    //         For each expected process
-    //             check it's not running
-    //         Shut down GPII
-    //     On (GPII shut down)
-    //         send signal that next test can be launched
+        currentGpii.server.flowManager.lifecycleManager.events.configurationRemoved.addListener(function () {
+            var returned = callHandlers(payloads.get, "get");
+            jqUnit.assertDeepEq("Checking that settings are properly restored", returned, payloads.init);
+        });
+
+        addRESTTest(currentTest.token, "login", function (data) {
+            jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+token+" was successfully logged in."), -1);                
+        });
+
+    });
+
 })();
