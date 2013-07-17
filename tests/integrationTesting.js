@@ -36,7 +36,13 @@ var tests = [
                     }
                 }]
             }
-        }
+        },
+        processes: [
+            {
+                command: "gsettings get org.gnome.desktop.a11y.applications screen-keyboard-enabled",
+                expect: "true"
+            }
+        ];
     }
 ];
 
@@ -100,6 +106,12 @@ var tests = [
             ret[handlerID]=fluid.invokeGlobalFunction(handlerID+"."+action, [handlerBlock]);
         });
         return ret;
+    };
+
+    var checkProcesses = function (payload, expectProcess) {
+        fluid.each(payload, function (processBlock, index) {
+            
+        });
     };
 
     var addRESTTest = function(token, action, onEnd) {
