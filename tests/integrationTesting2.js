@@ -58,7 +58,6 @@ var testDefs = [
 
     require("../../node_modules/universal/gpii/node_modules/testFramework/gpiiTests.js");
     require("gsettingsBridge");
-    /** Testing environment - holds both fixtures as well as components under test, exposes global test driver **/
 
     fluid.registerNamespace("gpii.integrationTesting");
 
@@ -66,8 +65,7 @@ var testDefs = [
 
 
     fluid.defaults("gpii.integrationTesting.httpReq", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        postInitFunction: "gpii.integrationTesting.httpReq.postInit",
+        gradeNames: ["fluid.littleComponent", "autoInit", "fluid.eventedComponent"],
         events: {
             onLogin: null,
             onLogout: null
@@ -75,11 +73,13 @@ var testDefs = [
     });
 
 
-    gpii.integrationTesting.httpReq.postInit = function (that) {
+    gpii.integrationTesting.httpReq.preInit = function (that) {
         that.login = function (token) {
             that.call(token, "login", that.events.onLogin.fire);
         }
-
+        that.logout = function (token) {
+            that.call(token, "logout", that.events.onLogout.fire);
+        }
         that.call = function (token, action, callback) {
             http.get({
                 host: "localhost",
@@ -99,7 +99,7 @@ var testDefs = [
                     fluid.log("Connection to the server was closed");
                 });
                 response.on("end", function() {
-                    callback(data)                
+                    callback(data, token);             
                 });
             }).on('error', function(err) {
                 jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);            
@@ -119,28 +119,38 @@ var testDefs = [
         }
     });
 
-    /** Test Case Holder - holds declarative representation of test cases **/
-
     fluid.defaults("gpii.integrationTesting.tests", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testDefs: testDefs[0],
         gpii: null,
         settingsStore: {},
-        modules: [ /* declarative specification of tests */ {
-            name: "Cat test case",
+        modules: [ {
+            name: "Full login/logout cycle",
             tests: [
             {
                 name: "Config process",
-                expect: 2,
+                expect: 4,
                 sequence: [ {
                     func: "gpii.integrationTesting.initSettings",
                     args: [ "{integrationTests}.options.testDefs", "{integrationTests}.options.settingsStore" ]
                 }, {
-                    func: "gpii.integrationTesting.login",
-                    args: [ "{httpReq}", "{integrationTests}.options.testDefs.token" ]
+                    func: "{httpReq}.login",
+                    args: [ "{integrationTests}.options.testDefs.token" ]
                 }, {
-                    listener: "gpii.integrationTesting.loginListen",
+                    listener: "gpii.integrationTesting.loginRequestListen",
                     event: "{httpReq}.events.onLogin"
+                }, {
+                    func: "gpii.integrationTesting.checkConfiguration",
+                    args: [ "{integrationTests}.options.testDefs"]
+                }, { 
+                    func: "{httpReq}.logout",
+                    args: [ "{integrationTests}.options.testDefs.token" ]
+                }, {
+                    listener: "gpii.integrationTesting.logoutRequestListen",
+                    event: "{httpReq}.events.onLogout"
+                }, {
+                    func: "gpii.integrationTesting.checkResetConfiguration",
+                    args: [ "{integrationTests}.options.testDefs", "{integrationTests}.options.settingsStore"]
                 }
                 ]
             }]
@@ -167,12 +177,22 @@ var testDefs = [
     gpii.integrationTesting.initSettings = function (testDef, settingsStore) {
         settingsStore.orig = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
     };
-    gpii.integrationTesting.login = function (httpReq, token) {
-        httpReq.login(token);
-    }
-    gpii.integrationTesting.loginListen = function (data) {
+    gpii.integrationTesting.loginRequestListen = function (data, token) {
         jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+token+" was successfully logged in."), -1);                
-    }
+    };
+    gpii.integrationTesting.checkConfiguration = function (testDef) {
+        var config = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
+        jqUnit.assertDeepEq("Checking that settings are set", config, testDef.settingsHandlers);
+        //TODO check processes
+    };
+    gpii.integrationTesting.logoutRequestListen = function (data, token) {
+        jqUnit.assertNotEquals("Successful logout message returned "+data, data.indexOf("User with token "+token+" was successfully logged out."), -1);                
+    };
+    gpii.integrationTesting.checkResetConfiguration = function (testDef, settingsStore) {
+        var currentSettings = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
+        jqUnit.assertDeepEq("Checking that settings are properly reset", currentSettings, settingsStore.orig);
+        //TODO check processes
+    };
     fluid.tests.testTests = function () {
         fluid.test.runTests([
             "gpii.integrationTesting.testEnv"
