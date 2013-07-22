@@ -52,8 +52,8 @@ https://github.com/gpii/universal/LICENSE.txt
     // This loads universal.
     var fluid = require("universal"),
         //http = require("http"),
-        gpii = fluid.registerNamespace("gpii");
-        //jqUnit = fluid.require("jqUnit");
+        gpii = fluid.registerNamespace("gpii"),
+        jqUnit = fluid.require("jqUnit");
 
     //require("testFramework");
     require("../../node_modules/universal/gpii/node_modules/testFramework/gpiiTests.js");
@@ -73,14 +73,14 @@ https://github.com/gpii/universal/LICENSE.txt
 
     fluid.defaults("gpii.integrationTesting.integrationTests", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-        testCases: [ {
+        components: [ {
             name: "Full configuration process",
             tests: [{
                 name: "Config process",
                 expect: 1,
                 sequence: [ {
                     func: "gpii.integrationTesting.initSettings",
-                    args: [ "{integrationTests}"]
+                    args: [ ""]
                 }
                 ]
             }
@@ -88,12 +88,15 @@ https://github.com/gpii/universal/LICENSE.txt
         }]
     });
 
-    gpii.integrationTesting.initSettings = function (a, b) {
-        console.log(a);
+    gpii.integrationTesting.initSettings = function () {
+        //sconsole.log(a);
         console.log(b);
 
     };
 
+    fluid.test.runTests([
+        "gpii.integrationTesting.testEnv"
+    ]);
 
     // var integrationTesting = gpii.tests.testEnvironment();
 

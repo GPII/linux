@@ -64,11 +64,54 @@ var testDefs = [
 
     fluid.registerNamespace("fluid.tests");
 
+
+    fluid.defaults("gpii.integrationTesting.httpReq", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        postInitFunction: "gpii.integrationTesting.httpReq.postInit",
+        events: {
+            onLogin: null,
+            onLogout: null
+        }
+    });
+
+
+    gpii.integrationTesting.httpReq.postInit = function (that) {
+        that.login = function (token) {
+            that.call(token, "login", that.events.onLogin.fire);
+        }
+
+        that.call = function (token, action, callback) {
+            http.get({
+                host: "localhost",
+                port: 8081,
+                path: "/user/"+token+"/"+action
+            }, function(response) {
+                var data = "";
+
+                response.on("data", function (chunk) {
+                    data += chunk;
+                });
+                response.on("close", function(err) {
+                    if (err) {
+                        jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);
+                        // jqUnit.start();
+                    }
+                    fluid.log("Connection to the server was closed");
+                });
+                response.on("end", function() {
+                    callback(data)                
+                });
+            }).on('error', function(err) {
+                jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);            
+            });
+        };
+    };
+
     fluid.defaults("gpii.integrationTesting.testEnv", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            gpiiServer: {
-                 type: "gpii.server"
+            httpReq: {
+                type: "gpii.integrationTesting.httpReq"
             },
             integrationTests: {
                 type: "gpii.integrationTesting.tests"
@@ -88,13 +131,16 @@ var testDefs = [
             tests: [
             {
                 name: "Config process",
-                expect: 1,
+                expect: 2,
                 sequence: [ {
                     func: "gpii.integrationTesting.initSettings",
                     args: [ "{integrationTests}.options.testDefs", "{integrationTests}.options.settingsStore" ]
                 }, {
                     func: "gpii.integrationTesting.login",
-                    args: [ "{integrationTests}.options.testDefs" ]
+                    args: [ "{httpReq}", "{integrationTests}.options.testDefs.token" ]
+                }, {
+                    listener: "gpii.integrationTesting.loginListen",
+                    event: "{httpReq}.events.onLogin"
                 }
                 ]
             }]
@@ -105,31 +151,6 @@ var testDefs = [
         that.options.gpii = gpii.config.makeConfigLoader(that.options.testDefs.gpiiConfig);
     };
 
-    gpii.integrationTesting.login = function (testDef) {
-        http.get({
-            host: "localhost",
-            port: 8081,
-            path: "/user/"+testDef.token+"/login"
-        }, function(response) {
-            var data = "";
-
-            response.on("data", function (chunk) {
-                data += chunk;
-            });
-            response.on("close", function(err) {
-                if (err) {
-                    jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);
-                    // jqUnit.start();
-                }
-                fluid.log("Connection to the server was closed");
-            });
-            response.on("end", function() {
-                jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+token+" was successfully logged in."), -1);                
-            });
-        }).on('error', function(err) {
-            fluid.log("Got error: " + err.message);
-        });
-    };
 
     /*
     * Sets the settings given in the json paramater. The content of the json passed
@@ -146,7 +167,12 @@ var testDefs = [
     gpii.integrationTesting.initSettings = function (testDef, settingsStore) {
         settingsStore.orig = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
     };
-
+    gpii.integrationTesting.login = function (httpReq, token) {
+        httpReq.login(token);
+    }
+    gpii.integrationTesting.loginListen = function (data) {
+        jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+token+" was successfully logged in."), -1);                
+    }
     fluid.tests.testTests = function () {
         fluid.test.runTests([
             "gpii.integrationTesting.testEnv"
