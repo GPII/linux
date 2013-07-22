@@ -54,7 +54,8 @@ var testDefs = [
     var fluid = require("universal"),
         http = require("http"),
         gpii = fluid.registerNamespace("gpii"),
-        jqUnit = fluid.require("jqUnit");
+        jqUnit = fluid.require("jqUnit"),
+        child_process = require('child_process');
 
     require("../../node_modules/universal/gpii/node_modules/testFramework/gpiiTests.js");
     require("gsettingsBridge");
@@ -63,6 +64,28 @@ var testDefs = [
 
     fluid.registerNamespace("fluid.tests");
 
+    fluid.defaults("gpii.integrationTesting.exec", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "fluid.eventedComponent"],
+        events: {
+            onExit: null,
+        }
+    });
+
+    gpii.integrationTesting.exec.preInit = function (that) {
+        that.exec = function (processSpec) {
+            var output = "";
+            var cp = child_process.exec(processSpec.command);
+            cp.stdout.on("data", function (data) {
+                output += data;
+            });
+            cp.on("exit", function (exitCode) {
+                that.events.onExit.fire(exitCode, output, processSpec);
+            });
+            cp.on("error", function (err) {
+               jqUnit.assertFalse("Got an error on exec... " + err.message, true);            
+            });
+        }
+    }
 
     fluid.defaults("gpii.integrationTesting.httpReq", {
         gradeNames: ["fluid.littleComponent", "autoInit", "fluid.eventedComponent"],
@@ -71,7 +94,6 @@ var testDefs = [
             onLogout: null
         }
     });
-
 
     gpii.integrationTesting.httpReq.preInit = function (that) {
         that.login = function (token) {
@@ -113,6 +135,9 @@ var testDefs = [
             httpReq: {
                 type: "gpii.integrationTesting.httpReq"
             },
+            exec: {
+                type: "gpii.integrationTesting.exec"
+            },
             integrationTests: {
                 type: "gpii.integrationTesting.tests"
             }
@@ -129,7 +154,7 @@ var testDefs = [
             tests: [
             {
                 name: "Config process",
-                expect: 4,
+                expect: 5,
                 sequence: [ {
                     func: "gpii.integrationTesting.initSettings",
                     args: [ "{integrationTests}.options.testDefs", "{integrationTests}.options.settingsStore" ]
@@ -142,6 +167,12 @@ var testDefs = [
                 }, {
                     func: "gpii.integrationTesting.checkConfiguration",
                     args: [ "{integrationTests}.options.testDefs"]
+                }, {
+                    func: "{exec}.exec",
+                    args: [ "{integrationTests}.options.testDefs.processes.0"]
+                }, {
+                    listener: "gpii.integrationTesting.onExecExit",
+                    event: "{exec}.events.onExit"
                 }, { 
                     func: "{httpReq}.logout",
                     args: [ "{integrationTests}.options.testDefs.token" ]
@@ -183,6 +214,12 @@ var testDefs = [
     gpii.integrationTesting.checkConfiguration = function (testDef) {
         var config = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
         jqUnit.assertDeepEq("Checking that settings are set", config, testDef.settingsHandlers);
+        //TODO check processes
+    };
+    gpii.integrationTesting.onExecExit = function (exitCode, output, processSpec) {
+        jqUnit.assertEquals("Checking that the process "+processSpec.command+" is running", output.trim(), processSpec.expect);
+        // var config = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
+        // jqUnit.assertDeepEq("Checking that settings are set", config, testDef.settingsHandlers);
         //TODO check processes
     };
     gpii.integrationTesting.logoutRequestListen = function (data, token) {
