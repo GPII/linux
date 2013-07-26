@@ -151,10 +151,17 @@ var testDefs = [
         fluid.each(testDefs, function (testDef, index) {
             var processes = testDef.processes;
             var testDefRef = "{integrationTests}.options.testDefs." + index;
+            //First add common steps, ie:
+            //Storing state, start server, logging in and checking that configuration is set
             var testFixture = {
                 name: testDef.name,
+                //number of asserts is 4 + number of checks for running processes
                 expect: 4 + testDef.processes.length,
                 sequence: [ {
+                    func: "gpii.integrationTesting.startServer",
+                    args: [ testDefRef, "{integrationTests}" ]
+                },
+                {
                     func: "gpii.integrationTesting.initSettings",
                     args: [ testDefRef, "{integrationTests}.options.settingsStore" ]
                 }, {
@@ -168,6 +175,7 @@ var testDefs = [
                     args: [ testDefRef ]
                 }]
             };
+            //For each process, run the command, then check that we get the expected output
             fluid.each(processes, function (process, pindex) {
                 testFixture.sequence.push({
                     func: "{exec}.exec",
@@ -177,7 +185,8 @@ var testDefs = [
                     event: "{exec}.events.onExit"
                 });
             });
-
+            //Back to the common steps:
+            //Logout, check that configuration is properly restored
             testFixture.sequence.push({ 
                     func: "{httpReq}.logout",
                     args: [ testDefRef + ".token" ]
@@ -185,7 +194,7 @@ var testDefs = [
                     listener: "gpii.integrationTesting.logoutRequestListen",
                     event: "{httpReq}.events.onLogout"
                 }, {
-                    func: "gpii.integrationTesting.checkResetConfiguration",
+                    func: "gpii.integrationTesting.checkRestoredConfiguration",
                     args: [ testDefRef, "{integrationTests}.options.settingsStore"]
                 });
 
@@ -195,24 +204,29 @@ var testDefs = [
     };
 
     fluid.defaults("gpii.integrationTesting.tests.server", {
-        gradeNames: ["autoInit", "{that}.buildServerGrade"],
+        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.buildServerGrade"],
         invokers: {
             buildServerGrade: {
-                funcName: "fluid.identity",
-                "args": "{gpii.integrationTesting.tests}.options.componentName"
+                funcName: "gpii.integrationTesting.tester",
+                "args": [ "{gpii.integrationTesting.tests}", "{that}", "{gpii.integrationTesting.tests}.componentName" ]
             }
         }
     });
 
-    gpii.integrationTesting.tests.server.preInit = function (that) {
-        that.buildServerGrade = function (a) {
-            console.log(a);
-            return a;
-        }
+    gpii.integrationTesting.tester = function (a, b, c) {
+        console.log(a);
+        var b = a;
     }
 
+    // gpii.integrationTesting.tests.server.preInit = function (that) {
+    //     that.buildServerGrade = function (a) {
+    //         console.log(a);
+    //         return a;
+    //     }
+    // }
+
     fluid.defaults("gpii.integrationTesting.tests", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder", "fluid.eventedComponent", "autoInit"],
         testDefs: testDefs,
         gpii: null,
         settingsStore: {},
@@ -222,6 +236,9 @@ var testDefs = [
                 createOnEvent: "createServer"
             }
         },
+        events: {
+            createServer: null
+        },
         modules: [ {
             name: "Full login/logout cycle",
             tests: gpii.integrationTesting.buildTestFixtures(testDefs)
@@ -229,7 +246,7 @@ var testDefs = [
     });
 
     gpii.integrationTesting.tests.preInit = function (that) {
-        that.options.gpii = gpii.config.makeConfigLoader(that.options.testDefs[0].gpiiConfig);
+        //that.options.gpii = gpii.config.makeConfigLoader(that.options.testDefs[0].gpiiConfig);
     };
 
 
@@ -248,6 +265,12 @@ var testDefs = [
         return ret;
     };
 
+    gpii.integrationTesting.startServer = function (testDef, tests) {
+        var componentName = gpii.config.createDefaults(testDef.gpiiConfig);
+        tests.events.createServer.fire(componentName);
+        var a = 'lkjasdf';
+
+    };
     gpii.integrationTesting.initSettings = function (testDef, settingsStore) {
         settingsStore.orig = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
     };
@@ -264,7 +287,7 @@ var testDefs = [
     gpii.integrationTesting.logoutRequestListen = function (data, token) {
         jqUnit.assertNotEquals("Successful logout message returned "+data, data.indexOf("User with token "+token+" was successfully logged out."), -1);                
     };
-    gpii.integrationTesting.checkResetConfiguration = function (testDef, settingsStore) {
+    gpii.integrationTesting.checkRestoredConfiguration = function (testDef, settingsStore) {
         var currentSettings = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
         jqUnit.assertDeepEq("Checking that settings are properly reset", currentSettings, settingsStore.orig);
     };
