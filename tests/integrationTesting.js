@@ -92,12 +92,9 @@ var testDefs = [
 
     require("gsettingsBridge");
 
-    fluid.registerNamespace("gpii.integrationTesting.linux");
-
     fluid.registerNamespace("fluid.tests");
 
-    require("../../node_modules/universal/gpii/node_modules/testFramework/gpiiTests.js");
-    require("../../node_modules/universal/gpii/node_modules/testFramework/integrationTesting.js");
+    require("../../node_modules/universal/gpii/node_modules/testFramework/index.js");
 
     fluid.defaults("gpii.integrationTesting.tests", {
         gradeNames: ["fluid.test.testCaseHolder", "fluid.eventedComponent", "autoInit"],
