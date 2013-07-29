@@ -1,8 +1,8 @@
-/*!
+/*
 
-Integration Testing
+GPII Integration Testing
 
-Copyright 2013 Raising the Floor - International
+Copyright 2013 Raising the Floor International
 
 Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
@@ -11,215 +11,317 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
-/*global require, console */
-
-// var tests = [
-//     {
-//         name: "Testing Mikel Vargas using Flat matchmaker (onscreen keyboard)",
-//         token: "MikelVargas",
-//         settingsHandlers: {
-//            "gpii.gsettings": {
-//                 "data": [{
-//                     "settings": {
-//                         "slowkeys-delay": { init: 100, expect: 400 },
-//                         "slowkeys-enable": { init: false, expect: true },
-//                         "bouncekeys-delay": { init: 100, expect: 200 },
-//                         "mousekeys-enable": { init: false, expect: true },
-//                         "stickykeys-enable": { init: false, expect: true },
-//                         "bouncekeys-enable": { init: false, expect: true },
-//                         "mousekeys-max-speed": { init: 250, expect: 850 },
-//                         "mousekeys-init-delay": { init: 110, expect: 120 },
-//                         "mousekeys-accel-time": { init: 300, expect: 800 },
-//                     },
-//                     "options": {
-//                         "schema": "org.gnome.desktop.a11y.keyboard"
-//                     }
-//                 }]
-//             }
-//         },
-//         processes: [
-//             {
-//                 command: "gsettings get org.gnome.desktop.a11y.applications screen-keyboard-enabled",
-//                 expect: "true"
-//             }
-//         ]
-//     }
-// ];
+/*global __dirname, require*/
+var testDefs = [
+    {
+        name: "Testing Mikel Vargas using Flat matchmaker (onscreen keyboard)",
+        gpiiConfig: {
+            nodeEnv: "development-config",
+            configPath: __dirname+"/integrationTests/setup1/configs"
+        },
+        token: "MikelVargas",
+        settingsHandlers: {
+           "gpii.gsettings": {
+                "data": [{
+                    "settings": {
+                        "slowkeys-delay": 400,
+                        "slowkeys-enable": true,
+                        "bouncekeys-delay": 200,
+                        "mousekeys-enable": true,
+                        "stickykeys-enable": true,
+                        "bouncekeys-enable": true,
+                        "mousekeys-max-speed": 850,
+                        "mousekeys-init-delay": 120,
+                        "mousekeys-accel-time": 800
+                    },
+                    "options": {
+                        "schema": "org.gnome.desktop.a11y.keyboard"
+                    }
+                }]
+            }
+        },
+        processes: [
+            {
+                command: "gsettings get org.gnome.desktop.a11y.applications screen-keyboard-enabled",
+                expect: "true"
+            }
+        ]
+    },
+    {
+        name: "Testing Sammy using Flat matchmaker",
+        gpiiConfig: {
+            nodeEnv: "development-config",
+            configPath: __dirname+"/integrationTests/setup1/configs"
+        },
+        token: "sammy",
+        settingsHandlers: {
+            "gpii.gsettings": {
+               "data": [{
+                    "settings": {
+                        "mag-factor": 2,
+                        "mouse-tracking": "centered"
+                    },
+                    "options": {
+                        "schema": "org.gnome.desktop.a11y.magnifier"
+                    }
+                }, {
+                   "settings": {
+                        "text-scaling-factor":1
+                    },
+                    "options": {
+                        "schema": "org.gnome.desktop.interface"
+                    }
+                } ]
+            }
+        },
+        processes: [
+            {
+                command: "gsettings get org.gnome.desktop.a11y.applications screen-magnifier-enabled",
+                expect: "true"
+            }
+        ]
+    }
+];
 
 (function () {
     "use strict";
-
-    // This loads universal.
     var fluid = require("universal"),
-        //http = require("http"),
+        http = require("http"),
         gpii = fluid.registerNamespace("gpii"),
-        jqUnit = fluid.require("jqUnit");
+        jqUnit = fluid.require("jqUnit"),
+        child_process = require('child_process');
 
-    //require("testFramework");
     require("../../node_modules/universal/gpii/node_modules/testFramework/gpiiTests.js");
     require("gsettingsBridge");
+
+    fluid.registerNamespace("gpii.integrationTesting");
+
+    fluid.registerNamespace("fluid.tests");
+
+    fluid.defaults("gpii.integrationTesting.exec", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "fluid.eventedComponent"],
+        events: {
+            onExit: null
+        }
+    });
+
+    gpii.integrationTesting.exec.preInit = function (that) {
+        that.exec = function (processSpec) {
+            var output = "";
+            var cp = child_process.exec(processSpec.command);
+            cp.stdout.on("data", function (data) {
+                output += data;
+            });
+            cp.on("exit", function (exitCode) {
+                that.events.onExit.fire(exitCode, output, processSpec);
+            });
+            cp.on("error", function (err) {
+               jqUnit.assertFalse("Got an error on exec... " + err.message, true);            
+            });
+        };
+    };
+
+    fluid.defaults("gpii.integrationTesting.httpReq", {
+        gradeNames: ["fluid.littleComponent", "autoInit", "fluid.eventedComponent"],
+        events: {
+            onLogin: null,
+            onLogout: null
+        }
+    });
+
+    gpii.integrationTesting.httpReq.preInit = function (that) {
+        that.login = function (token) {
+            that.call(token, "login", that.events.onLogin.fire);
+        };
+        that.logout = function (token) {
+            that.call(token, "logout", that.events.onLogout.fire);
+        };
+        that.call = function (token, action, callback) {
+            http.get({
+                host: "localhost",
+                port: 8081,
+                path: "/user/"+token+"/"+action
+            }, function(response) {
+                var data = "";
+
+                response.on("data", function (chunk) {
+                    data += chunk;
+                });
+                response.on("close", function(err) {
+                    if (err) {
+                        jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);
+                        // jqUnit.start();
+                    }
+                    fluid.log("Connection to the server was closed");
+                });
+                response.on("end", function() {
+                    callback(data, token);             
+                });
+            }).on('error', function(err) {
+                jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);            
+            });
+        };
+    };
 
     fluid.defaults("gpii.integrationTesting.testEnv", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            // gpiiServer: {
-            //     type: "gpii.server"
-            // },
+            httpReq: {
+                type: "gpii.integrationTesting.httpReq"
+            },
+            exec: {
+                type: "gpii.integrationTesting.exec"
+            },
             integrationTests: {
-                type: "gpii.integrationTesting.integrationTests"
+                type: "gpii.integrationTesting.tests"
             }
         }
     });
 
-    fluid.defaults("gpii.integrationTesting.integrationTests", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-        components: [ {
-            name: "Full configuration process",
-            tests: [{
-                name: "Config process",
-                expect: 1,
+    gpii.integrationTesting.buildTestFixtures = function (testDefs) {
+        var testFixtures = [];
+
+        fluid.each(testDefs, function (testDef, index) {
+            var processes = testDef.processes;
+            var testDefRef = "{integrationTests}.options.testDefs." + index;
+            //First add common steps, ie:
+            //Storing state, start server, logging in and checking that configuration is set
+            var testFixture = {
+                name: testDef.name,
+                //number of asserts is 4 + number of checks for running processes
+                expect: 4 + testDef.processes.length,
                 sequence: [ {
+                    func: "gpii.integrationTesting.startServer",
+                    args: [ testDefRef, "{integrationTests}" ]
+                }, {
                     func: "gpii.integrationTesting.initSettings",
-                    args: [ ""]
-                }
-                ]
-            }
-            ]
-        }]
-    });
+                    args: [ testDefRef, "{integrationTests}.options.settingsStore" ]
+                }, {
+                    func: "{httpReq}.login",
+                    args: [ testDefRef + ".token" ]
+                }, {
+                    listener: "gpii.integrationTesting.loginRequestListen",
+                    event: "{httpReq}.events.onLogin"
+                }, {
+                    func: "gpii.integrationTesting.checkConfiguration",
+                    args: [ testDefRef ]
+                }]
+            };
+            //For each process, run the command, then check that we get the expected output
+            fluid.each(processes, function (process, pindex) {
+                testFixture.sequence.push({
+                    func: "{exec}.exec",
+                    args: [ testDefRef + ".processes." + pindex]
+                }, {
+                    listener: "gpii.integrationTesting.onExecExit",
+                    event: "{exec}.events.onExit"
+                });
+            });
+            //Back to the common steps:
+            //Logout, check that configuration is properly restored
+            testFixture.sequence.push({ 
+                    func: "{httpReq}.logout",
+                    args: [ testDefRef + ".token" ]
+                }, {
+                    listener: "gpii.integrationTesting.logoutRequestListen",
+                    event: "{httpReq}.events.onLogout"
+                }, {
+                    func: "gpii.integrationTesting.checkRestoredConfiguration",
+                    args: [ testDefRef, "{integrationTests}.options.settingsStore"]
+                }, {
+                    func: "gpii.integrationTesting.stopServer",
+                    args: [ "{integrationTests}" ]
+                });
 
-    gpii.integrationTesting.initSettings = function () {
-        //sconsole.log(a);
-        console.log(b);
-
+            testFixtures.push(testFixture);
+        });
+        return testFixtures;
     };
 
-    fluid.test.runTests([
-        "gpii.integrationTesting.testEnv"
-    ]);
+    fluid.defaults("gpii.integrationTesting.tests.server", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.buildServerGrade"],
+        invokers: {
+            buildServerGrade: {
+                funcName: "fluid.identity",
+                "args": [ "{gpii.integrationTesting.tests}.componentName" ]
+            }
+        }
+    });
 
-    // var integrationTesting = gpii.tests.testEnvironment();
+    gpii.integrationTesting.tester = function (a, b, c) {
+        console.log(a);
+        var b = a;
+    }
 
-    // jqUnit.module("Integration Testing");
+    fluid.defaults("gpii.integrationTesting.tests", {
+        gradeNames: ["fluid.test.testCaseHolder", "fluid.eventedComponent", "autoInit"],
+        testDefs: testDefs,
+        gpii: null,
+        settingsStore: {},
+        components: {
+            gpii: {
+                type: "gpii.integrationTesting.tests.server",
+                createOnEvent: "createServer"
+            }
+        },
+        events: {
+            createServer: null
+        },
+        modules: [ {
+            name: "Full login/logout cycle",
+            tests: gpii.integrationTesting.buildTestFixtures(testDefs)
+        }]
+    });
     
-    // var currentTest = tests[0];
+    /*
+    * Sets the settings given in the json paramater. The content of the json passed
+    * is the values to set in a format similar to the content of 'initialState'
+    */
+    gpii.integrationTesting.getSettings = function (payload) {
+        var ret = {};
+        fluid.each(payload, function (handlerBlock, handlerID) {
+            ret[handlerID]=fluid.invokeGlobalFunction(handlerID+".get", [handlerBlock]);
+        });
+        return ret;
+    };
 
-    // var extractPayloads = function (test) {
-    //     var settingsHandlers = test.settingsHandlers;
-    //     var payloads = {
-    //         init: fluid.copy(settingsHandlers),
-    //         get: fluid.copy(settingsHandlers),
-    //         expect: fluid.copy(settingsHandlers)
-    //     };
+    gpii.integrationTesting.startServer = function (testDef, tests) {
+        //TODO: remove once server is properly stopped
+        if (testDef.token === "MikelVargas") {
+            tests.componentName = gpii.config.createDefaults(testDef.gpiiConfig);
+            tests.events.createServer.fire();
+        }
+    };
+    gpii.integrationTesting.initSettings = function (testDef, settingsStore) {
+        settingsStore.orig = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
+    };
+    gpii.integrationTesting.loginRequestListen = function (data, token) {
+        jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+token+" was successfully logged in."), -1);                
+    };
+    gpii.integrationTesting.checkConfiguration = function (testDef) {
+        var config = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
+        jqUnit.assertDeepEq("Checking that settings are set", config, testDef.settingsHandlers);
+    };
+    gpii.integrationTesting.onExecExit = function (exitCode, output, processSpec) {
+        jqUnit.assertEquals("Checking that the process "+processSpec.command+" is running", output.trim(), processSpec.expect);
+    };
+    gpii.integrationTesting.logoutRequestListen = function (data, token) {
+        jqUnit.assertNotEquals("Successful logout message returned "+data, data.indexOf("User with token "+token+" was successfully logged out."), -1);                
+    };
+    gpii.integrationTesting.checkRestoredConfiguration = function (testDef, settingsStore) {
+        var currentSettings = gpii.integrationTesting.getSettings(testDef.settingsHandlers);
+        jqUnit.assertDeepEq("Checking that settings are properly reset", currentSettings, settingsStore.orig);
+    };
+    gpii.integrationTesting.stopServer = function (tests) {
+        // var instantiator = fluid.getInstantiator(tests.gpii);
+        // instantiator.clearComponent(tests.gpii, "server");
+        // var a = tests;
+    };
+    fluid.tests.testTests = function () {
+        fluid.test.runTests([
+            "gpii.integrationTesting.testEnv"
+        ]);
+    };
 
-    //     fluid.each(settingsHandlers, function (handlerBlock, handlerID) {
-    //         fluid.each(handlerBlock, function (hbArray, hbHeader) {
-    //             fluid.each(hbArray, function (handlerEntry, index) {
-    //                 var settings = handlerEntry.settings;
-    //                 var initBlock = {};
-    //                 var getBlock = {};
-    //                 var expectBlock = {};
-
-    //                 fluid.each(settings, function (val, key) {
-    //                     initBlock[key] = val.init;
-    //                     getBlock[key] = null;
-    //                     expectBlock[key] = val.expect;
-    //                 });
-                    
-    //                 payloads.init[handlerID][hbHeader][index] = { options: handlerEntry.options, settings: initBlock };
-    //                 payloads.get[handlerID][hbHeader][index] = { options: handlerEntry.options, settings: getBlock };
-    //                 payloads.expect[handlerID][hbHeader][index] = { options: handlerEntry.options, settings: expectBlock };
-    //             });  
-    //         });
-    //     });
-    //     return payloads;
-    // };
-
-    // /*
-    // * Sets the settings given in the json paramater. The content of the json passed
-    // * is the values to set in a format similar to the content of 'initialState'
-    // */
-    // var callHandlers = function (payload, action) {
-    //     var ret = {};
-    //     fluid.each(payload, function (handlerBlock, handlerID) {
-    //         ret[handlerID]=fluid.invokeGlobalFunction(handlerID+"."+action, [handlerBlock]);
-    //     });
-    //     return ret;
-    // };
-
-    // var checkProcesses = function (payload, expectProcess) {
-    //     fluid.each(payload, function (processBlock, index) {
-            
-    //     });
-    // };
-
-    // var addRESTTest = function(token, action, onEnd) {
-    //     http.get({
-    //         host: "localhost",
-    //         port: 8081,
-    //         path: "/user/"+token+"/"+action
-    //     }, function(response) {
-    //         var data = "";
-    //         fluid.log("Callback from "+action+" called");
-
-    //         response.on("data", function (chunk) {
-    //             fluid.log("Response from server: " + chunk);
-    //             data += chunk;
-    //         });
-    //         response.on("close", function(err) {
-    //             if (err) {
-    //                 jqUnit.assertFalse("Got an error on "+action+": " + err.message, true);
-    //                 jqUnit.start();
-    //             }
-    //             fluid.log("Connection to the server was closed");
-    //         });
-    //         response.on("end", function() {
-    //             fluid.log("Connection to server ended");
-    //             onEnd(data);
-    //         });
-    //     }).on('error', function(err) {
-    //         fluid.log("Got error: " + err.message);
-    //         jqUnit.start();
-    //     });
-    // };
-    
-    // integrationTesting.asyncTest("Integration Tester", function () {
-    //     //extract the payloads we need from test:
-    //     var payloads = extractPayloads(currentTest);
-
-    //     //set initial settings
-    //     callHandlers(payloads.init, "set");
-    //     //and check that they are properly set
-    //     var returned = callHandlers(payloads.get, "get");
-    //     jqUnit.assertDeepEq("Checking that initial settings are properly set", returned, payloads.init);
-
-    //     //start up server
-    //     var currentGpii = gpii.config.makeConfigLoader({
-    //         "nodeEnv": "development-config",
-    //         "configPath": __dirname+"/integrationTests/setup1/configs"
-    //     });
-    //     fluid.log("SERVER STARTED");
-
-    //     currentGpii.server.flowManager.lifecycleManager.events.configurationApplied.addListener(function () {
-    //         var returned = callHandlers(payloads.get, "get");
-    //         jqUnit.assertDeepEq("Checking that settings are properly set", returned, payloads.expect);
-    //         //log out
-    //         addRESTTest(currentTest.token, "logout", function(data) {   
-    //             jqUnit.assertNotEquals("Successful logout message returned", data.indexOf("successfully logged out."), -1);
-    //             console.log("So far, so good");
-    //             jqUnit.start();               
-    //         });
-    //     });
-
-    //     currentGpii.server.flowManager.lifecycleManager.events.configurationRemoved.addListener(function () {
-    //         var returned = callHandlers(payloads.get, "get");
-    //         jqUnit.assertDeepEq("Checking that settings are properly restored", returned, payloads.init);
-    //     });
-
-    //     addRESTTest(currentTest.token, "login", function (data) {
-    //         jqUnit.assertNotEquals("Successful login message returned "+data, data.indexOf("User with token "+token+" was successfully logged in."), -1);                
-    //     });
-
-    // });
-
+    fluid.tests.testTests();
 })();
