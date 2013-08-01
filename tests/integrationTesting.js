@@ -86,10 +86,8 @@ var testDefs = [
 (function () {
     "use strict";
     var fluid = require("universal"),
-        gpii = fluid.registerNamespace("gpii"),
-        jqUnit = fluid.require("jqUnit"),
-        child_process = require('child_process');
-
+        gpii = fluid.registerNamespace("gpii");
+        
     require("gsettingsBridge");
 
     fluid.registerNamespace("fluid.tests");
