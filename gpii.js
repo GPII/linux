@@ -14,6 +14,7 @@ var fluid = require("universal"),
     gpii = fluid.registerNamespace("gpii");
 
 fluid.require("gsettingsBridge", require);
+fluid.require("orca", require);
 
 gpii.config.makeConfigLoader({
     nodeEnv: gpii.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
