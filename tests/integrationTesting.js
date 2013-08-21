@@ -92,7 +92,7 @@ var testDefs = [
 
     fluid.registerNamespace("fluid.tests");
 
-    require("../../node_modules/universal/gpii/node_modules/testFramework/index.js");
+    require(__dirname+"/../../node_modules/universal/tests/IntegrationTests.js");
 
     fluid.defaults("gpii.integrationTesting.tests", {
         gradeNames: ["fluid.test.testCaseHolder", "fluid.eventedComponent", "autoInit"],
