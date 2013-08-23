@@ -11,12 +11,12 @@ https://github.com/gpii/universal/LICENSE.txt
 */
 
 var fluid = require("universal"),
-    gpii = fluid.registerNamespace("gpii");
+    kettle = fluid.registerNamespace("kettle");
 
 fluid.require("gsettingsBridge", require);
 fluid.require("orca", require);
 
-gpii.config.makeConfigLoader({
-    nodeEnv: gpii.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
-    configPath: gpii.config.getConfigPath() || "../node_modules/universal/gpii/configs"
+kettle.config.makeConfigLoader({
+    nodeEnv: kettle.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
+    configPath: kettle.config.getConfigPath() || "../node_modules/universal/gpii/configs"
 });
