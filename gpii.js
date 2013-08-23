@@ -14,6 +14,7 @@ var fluid = require("universal"),
     kettle = fluid.registerNamespace("kettle");
 
 fluid.require("gsettingsBridge", require);
+fluid.require("orca", require);
 
 kettle.config.makeConfigLoader({
     nodeEnv: kettle.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
