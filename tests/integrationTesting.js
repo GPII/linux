@@ -80,6 +80,36 @@ var testDefs = [
                 expect: "true"
             }
         ]
+    },
+    {
+        name: "Testing orca1 using Flat matchmaker",
+        gpiiConfig: {
+            nodeEnv: "development-config",
+            configPath: __dirname+"/integrationTests/setup1/configs"
+        },
+        token: "orca1",
+        settingsHandlers: {
+            "gpii.orca": {
+               "data": [{
+                    "settings": {
+                        "sayAllStyle": 0,
+                        "enableSpeech": true,
+                        "enableBraille": true,
+                        "enableEchoByWord": true,
+                        "enableEchoByCharacter": false,
+                        'voices.default.rate': 90.9090909090909,
+                        "enableTutorialMessages": false,
+                        'voices.default.family': { "locale": 'es', "name": 'spanish-latin-american' },
+                        "verbalizePunctuationStyle": 0
+                    },
+                    "options": {
+                        "user": "orca1"
+                    }
+                } ]
+            }
+        },
+        processes: [
+        ]
     }
 ];
 
@@ -89,6 +119,7 @@ var testDefs = [
         gpii = fluid.registerNamespace("gpii");
         
     require("gsettingsBridge");
+    require("orca");
 
     fluid.registerNamespace("fluid.tests");
 
@@ -112,7 +143,7 @@ var testDefs = [
             tests: gpii.integrationTesting.buildTestFixtures(testDefs)
         }]
     }); 
-    
+
     fluid.tests.testTests = function () {
         fluid.test.runTests([
             "gpii.integrationTesting.testEnv"
