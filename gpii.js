@@ -17,6 +17,6 @@ fluid.require("gsettingsBridge", require);
 fluid.require("orca", require);
 
 kettle.config.makeConfigLoader({
-    nodeEnv: kettle.config.getNodeEnv("fm.ps.sr.dr.mm.os.development"),
+    nodeEnv: kettle.config.getNodeEnv("fm.ps.sr.dr.mm.os.lms.development"),
     configPath: kettle.config.getConfigPath() || "../node_modules/universal/gpii/configs"
 });
