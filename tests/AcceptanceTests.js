@@ -328,4 +328,4 @@ var testDefs = [
     }
 ];
 
-gpii.acceptanceTesting.buildTests(testDefs, gpiiConfig);
+gpii.acceptanceTesting.runTests(testDefs, gpiiConfig);
