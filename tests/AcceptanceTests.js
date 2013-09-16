@@ -23,7 +23,7 @@ require("orca");
 
 fluid.registerNamespace("fluid.tests");
 
-require(__dirname+"/../../node_modules/universal/tests/AcceptanceTests.js");
+require(__dirname + "/../../node_modules/universal/tests/AcceptanceTests.js");
 
 var configPath = path.resolve(__dirname, "./acceptanceTests/setup1/configs");
 var gpiiConfig = {
