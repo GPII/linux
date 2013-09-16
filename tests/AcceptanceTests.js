@@ -17,7 +17,7 @@ https://github.com/gpii/universal/LICENSE.txt
 var fluid = require("universal"),
     path = require("path"),
     gpii = fluid.registerNamespace("gpii");
-    
+
 require("gsettingsBridge");
 require("orca");
 
