@@ -2,7 +2,7 @@
 
 # GPII Linux Build Script
 #
-# Copyright 2012 OCAD University
+# Copyright 2012-2013 OCAD University
 #
 # Licensed under the New BSD license. You may not use this file except in
 # compliance with this License.
@@ -14,6 +14,7 @@ currentDir=`pwd`
 node_modules="../node_modules"
 universal="../node_modules/universal"
 repoURL="git://github.com/GPII/universal.git"
+tag="tags/v0.2"
 usbListenerDir="./usbDriveListener"
 gpiiInstallDir="/usr/local/gpii"
 gpiiStateDir="/var/lib/gpii"
@@ -34,6 +35,7 @@ else
     echo "cloning universal"
     git clone "$repoURL" "$universal"
     cd $universal
+    git checkout $tag
     npm install
     cd $currentDir
 fi
