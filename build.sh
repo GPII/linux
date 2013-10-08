@@ -32,7 +32,7 @@ if [ -d $universal ]; then
 else
     echo "$universal does not exist"
     echo "cloning universal"
-    git clone "$repoURL" -b v0.2 "$universal"
+    git clone "$repoURL" "$universal"
     cd $universal
     npm install
     cd $currentDir
