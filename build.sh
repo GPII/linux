@@ -43,6 +43,11 @@ cd node_modules/gsettingsBridge/nodegsettings
 node-gyp configure build
 cd ../../..
 
+# Compile the Xrandr C++ Bridge
+cd node_modules/xrandr/nodexrandr
+node-gyp configure build
+cd ../../..
+
 # Create standard directory structure for GPII.
 # Note: everything below here must be run as root, since we're installing ourselves centrally.
 if [ -d $gpiiInstallDir ]; then
