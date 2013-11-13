@@ -35,7 +35,7 @@ else
     echo "cloning universal"
     git clone "$repoURL" "$universal"
     cd $universal
-    git checkout $tag
+    git checkout -b $tag
     npm install
     cd $currentDir
 fi
