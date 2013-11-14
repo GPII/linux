@@ -43,7 +43,7 @@ cd node_modules/gsettingsBridge/nodegsettings
 node-gyp configure build
 cd ../../..
 
-# Compile the GSettings C++ Bridge
+# Compile the ALSA C++ Bridge
 cd node_modules/alsa/nodealsa
 node-gyp configure build
 cd ../../..
