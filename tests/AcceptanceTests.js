@@ -20,6 +20,7 @@ var fluid = require("universal"),
 
 require("gsettingsBridge");
 require("orca");
+require("alsa");
 
 fluid.registerNamespace("fluid.tests");
 
@@ -122,6 +123,13 @@ var testDefs = [
                         "schema": "org.gnome.desktop.interface"
                     }
                 }]
+            },
+            "gpii.alsa": {
+                "data": [{
+                    "settings": {
+                        "masterVolume": 50
+                    }
+                }]
             }
         },
         processes: [
@@ -218,6 +226,8 @@ var testDefs = [
                             "default" : {
                                 "established": false,
                                 "rate": 102.27272727272727,
+                                "average-pitch": 1.5,
+                                "gain": 7.5,
                                 "family": {
                                     "locale": "en",
                                     "name": "en-westindies"
@@ -260,6 +270,8 @@ var testDefs = [
                             "default" : {
                                 "established": false,
                                 "rate": 102.27272727272727,
+                                "average-pitch": 1.5,
+                                "gain": 7.5,
                                 "family": {
                                     "locale": "en",
                                     "name": "en-westindies"
