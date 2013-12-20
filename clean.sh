@@ -15,6 +15,11 @@ node-gyp clean
 rm -rf build
 cd ../../..
 
+cd node_modules/alsa/nodealsa
+node-gyp clean
+rm -rf build
+cd ../../..
+
 sudo rm -rf /usr/local/gpii
 sudo rm -rf /var/lib/gpii
 sudo rm -f /etc/udev/rules.d/80-gpii.rules
