@@ -16,15 +16,14 @@ https://github.com/gpii/universal/LICENSE.txt
 "use strict";
 var fluid = require("universal"),
     path = require("path"),
+    kettle = fluid.registerNamespace("kettle"),
     gpii = fluid.registerNamespace("gpii");
 
 require("gsettingsBridge");
 require("orca");
 require("alsa");
 
-fluid.registerNamespace("fluid.tests");
-
-require(__dirname + "/../../node_modules/universal/tests/AcceptanceTests.js");
+fluid.require("universal/tests/AcceptanceTests", require);
 
 var configPath = path.resolve(__dirname, "./acceptanceTests/setup1/configs");
 var gpiiConfig = {
@@ -35,7 +34,7 @@ var gpiiConfig = {
 var testDefs = [
     {
         name: "Testing Mikel Vargas using Flat matchmaker (onscreen keyboard)",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "MikelVargas",
         settingsHandlers: {
            "gpii.gsettings": {
@@ -67,7 +66,7 @@ var testDefs = [
     },
     {
         name: "Testing Sammy using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "sammy",
         settingsHandlers: {
             "gpii.gsettings": {
@@ -99,7 +98,7 @@ var testDefs = [
     },
     {
         name: "Testing os_common using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "os_common",
         settingsHandlers: {
            "gpii.gsettings": {
@@ -142,7 +141,7 @@ var testDefs = [
     },
     {
         name: "Testing os_gnome using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "os_gnome",
         settingsHandlers: {
            "gpii.gsettings": {
@@ -176,7 +175,7 @@ var testDefs = [
     },
     {
         name: "Testing os_win7 using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "os_win7",
         settingsHandlers: {
            "gpii.gsettings": {
@@ -210,7 +209,7 @@ var testDefs = [
     },
     {
         name: "Testing screenreader_common using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "screenreader_common",
         settingsHandlers: {
             "gpii.orca": {
@@ -255,7 +254,7 @@ var testDefs = [
     },
     {
         name: "Testing screenreader_orca using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "screenreader_orca",
         settingsHandlers: {
             "gpii.orca": {
@@ -298,7 +297,7 @@ var testDefs = [
     },
     {
         name: "Testing screenreader_nvda using Flat matchmaker",
-        gpiiConfig: gpiiConfig,
+        config: gpiiConfig,
         token: "screenreader_nvda",
         settingsHandlers: {
             "gpii.orca": {
@@ -340,4 +339,6 @@ var testDefs = [
     }
 ];
 
-gpii.acceptanceTesting.runTests(testDefs, gpiiConfig);
+
+testDefs = gpii.acceptanceTesting.buildTests(testDefs);
+module.exports = kettle.tests.bootstrap(testDefs);
