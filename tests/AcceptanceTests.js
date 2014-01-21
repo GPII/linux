@@ -122,13 +122,6 @@ var testDefs = [
                         "schema": "org.gnome.desktop.interface"
                     }
                 }]
-            },
-            "gpii.alsa": {
-                "data": [{
-                    "settings": {
-                        "masterVolume": 50
-                    }
-                }]
             }
         },
         processes: [
@@ -161,6 +154,13 @@ var testDefs = [
                     },
                     "options": {
                         "schema": "org.gnome.desktop.interface"
+                    }
+                }]
+            },
+            "gpii.alsa": {
+                "data": [{
+                    "settings": {
+                        "masterVolume": 50
                     }
                 }]
             }
