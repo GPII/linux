@@ -1,0 +1,6 @@
+[Desktop Entry]
+Categories=System;
+Type=Application
+Name=GPII USB Drive User Listener
+Exec=gpii-usb-user-listener
+Terminal=true
