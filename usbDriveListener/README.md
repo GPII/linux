@@ -16,9 +16,10 @@ typing _./gpii-usb-user-listener_ but you should make sure that you have write
 access to _/var/lib/gpii/log.txt_
 
 Usage instructions:
+
 1. Prepare a USB stick with a popular readable file system
 2. Create a file _.gpii-user-token.txt_ (with a valid token on it) in the top
 level of your USB stick
 3. Start the **GPII Linux USB Drive User Listener**
-4. Start the Flow Manager by running ../start.sh
+4. Start the Flow Manager by running _start.sh_
 5. Add/remove the USB stick and watch your settings change!
