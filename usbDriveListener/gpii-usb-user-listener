@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# GPII Linux USB Drive User Listener
+#
+# Copyright 2014 Emergya
+#
+# Licensed under the New BSD license. You may not use this file except in
+# compliance with this License.
+#
+# You may obtain a copy of the License at
+# https://github.com/gpii/universal/LICENSE.txt
+
+from gi.repository import GUdev
+from gi.repository import GLib
+
+from socket import error as socket_error
+import errno
+import httplib2
+import logging
+import os
+import subprocess
+import time
+
+LOG_FILEPATH = '/var/lib/gpii/log.txt'
+TOKEN_FILE = '.gpii-user-token.txt'
+MAX_TIMEOUT = 5
+
+class UserListener:
+  def __init__(self):
+    self.c = GUdev.Client(subsystems=['block'])
+    self.c.connect('uevent', self.callback)
+    self.gpii_token = ''
+
+    self.log = logging.getLogger("gpii")
+    hdlr = logging.FileHandler(LOG_FILEPATH)
+    formatter = logging.Formatter('%(message)s')
+    hdlr.setFormatter(formatter)
+    self.log.addHandler(hdlr)
+    self.log.setLevel(logging.DEBUG)
+
+  def callback(self, client, ev, device):
+    if ev == 'add' and device.get_devtype() == 'partition':
+      device_name = device.get_name()
+      mount_point = ''
+
+      command_line = "mount | grep " + device_name + " | awk '{print $3}'"
+
+      mount_point = subprocess.check_output(command_line, shell=True)
+
+      timeout = 0
+      while (timeout != MAX_TIMEOUT):
+        timeout += 1
+        mount_point = subprocess.check_output(command_line, \
+                                              shell=True).split('\n')[0]
+        if mount_point: break
+        time.sleep(1)
+
+      if mount_point:
+        gpii_token_filepath = os.path.join(mount_point, TOKEN_FILE)
+        if os.path.exists(gpii_token_filepath):
+            gpii_token_file = open(gpii_token_filepath, 'r')
+            self.gpii_token = gpii_token_file.read().split('\n')[0]
+            gpii_token_file.close()
+            self.gpii_login()
+    elif ev == 'remove' \
+        and device.get_devtype() == 'partition' \
+        and self.gpii_token:
+      self.gpii_logout()
+
+  def gpii_login(self):
+    h = httplib2.Http()
+    try:
+      resp, content = h.request("http://localhost:8081/user/%s/login" % \
+                                (self.gpii_token,))
+      if resp.status == 200:
+        print content
+        self.log.info(content);
+    except socket_error, e:
+      print e
+
+  def gpii_logout(self):
+    h = httplib2.Http()
+    try:
+      resp, content = h.request("http://localhost:8081/user/%s/logout" % \
+                                (self.gpii_token,))
+      if resp.status == 200:
+        print content
+        self.log.info(content);
+    except socket_error, e:
+      print e
+
+if __name__=='__main__':
+  listener = UserListener()
+  main_loop = GLib.MainLoop()
+  try:
+    print "\nStarting the GPII USB Drive User Listener"
+    main_loop.run()
+  except KeyboardInterrupt:
+    print "\nStopping the GPII USB Drive User Listener"
+  except Exception:
+    raise

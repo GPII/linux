@@ -1,6 +1,0 @@
-Usage instructions:
-1. Make sure you've built the Linux repository by running ../build.sh
-2. Prepare a USB stick with a Linux-readable file system
-3. Copy tests/.gpii-user-token.txt to the root level of your USB stick
-4. Start the Flow Manager by running ../start.sh
-5. Add/remove the USB stick and watch your settings change!
