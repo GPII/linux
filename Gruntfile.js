@@ -1,43 +1,25 @@
 module.exports = function(grunt) {
+    function nodeGypCompileShell(dir) {
+        return {
+            options: {
+                stdout: true,
+                stderr: true,
+                execOptions: {
+                    cwd: dir
+                }
+            },
+            command: function() {
+                return "node-gyp configure build"; 
+            }
+        }
+    } 
+
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
         shell: {
-            compileGSettings: {
-                options: {
-                    stdout: true,
-                    stderr: true,
-                    execOptions: {
-                        cwd: "node_modules/gsettingsBridge/nodegsettings"
-                    }
-                },
-                command: function() {
-                    return "node-gyp configure build"; 
-                }
-            },
-            compileAlsaBridge: {
-                options: {
-                    stdout: true,
-                    stderr: true,
-                    execOptions: {
-                        cwd: "node_modules/alsa/nodealsa"
-                    }
-                },
-                command: function() {
-                    return "node-gyp configure build"; 
-                }
-            },
-            compileXrandrBridge: {
-                options: {
-                    stdout: true,
-                    stderr: true,
-                    execOptions: {
-                        cwd: "node_modules/xrandr/nodexrandr"
-                    }
-                },
-                command: function() {
-                    return "node-gyp configure build"; 
-                }
-            },
+            compileGSettings: nodeGypCompileShell("node_modules/gsettingsBridge/nodegsettings"),
+            compileAlsaBridge: nodeGypCompileShell("node_modules/alsa/nodealsa"),
+            compileXrandrBridge: nodeGypCompileShell("node_modules/xrandr/nodexrandr")
         }
     });
 
