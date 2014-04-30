@@ -13,10 +13,16 @@ https://github.com/gpii/universal/LICENSE.txt
 var fluid = require("universal"),
     kettle = fluid.registerNamespace("kettle");
 
+// Settings Handlers
+//
 fluid.require("gsettingsBridge", require);
 fluid.require("orca", require);
 fluid.require("alsa", require);
 fluid.require("xrandr", require);
+
+// Device Reporters
+//
+fluid.require("packagekit", require);
 
 kettle.config.makeConfigLoader({
     nodeEnv: kettle.config.getNodeEnv("fm.ps.sr.dr.mm.os.lms.development"),
