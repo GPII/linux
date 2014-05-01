@@ -1,4 +1,18 @@
+/*!
+GPII Linux Personalization Framework Node.js Bootstrap
+
+Copyright 2014 RFT-US
+
+Licensed under the New BSD license. You may not use this file except in
+compliance with this License.
+
+You may obtain a copy of the License at
+https://github.com/gpii/universal/LICENSE.txt
+*/
+
 module.exports = function(grunt) {
+    var usbListenerDir = "./usbDriveListener";
+
     function nodeGypCompileShell(dir) {
         return {
             options: {
@@ -38,6 +52,27 @@ module.exports = function(grunt) {
             cleanAlsaBridge: nodeGypCleanShell("node_modules/alsa/nodealsa"),
             compileXrandrBridge: nodeGypCompileShell("node_modules/xrandr/nodexrandr"),
             cleanXrandrBridge: nodeGypCleanShell("node_modules/xrandr/nodexrandr"),
+            installUsbLib: {
+                options: {
+                    stdout: true,
+                    stderr: true
+                },
+                command: [
+                    "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
+                    "sudo cp " + usbListenerDir + 
+                        "/gpii-usb-user-listener.desktop /usr/share/applications/"
+                ].join("&&")
+            },
+            uninstallUsbLib: {
+                options: {
+                    stdout: true,
+                    stderr: true
+                },
+                command: [
+                    "sudo rm /usr/bin/gpii-usb-user-listener",
+                    "sudo rm /usr/share/applications/gpii-usb-user-listener.desktop" 
+                ].join("&&")
+            },
             startGpii: {
                 options: {
                     stdout: true,
@@ -52,7 +87,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-gpii");
 
-    grunt.registerTask('build', "Build the entire GPII", function() {
+    grunt.registerTask("build", "Build the entire GPII", function() {
         grunt.task.run("gpiiUniversal");
         grunt.task.run("shell:compileGSettings");        
         grunt.task.run("shell:compileAlsaBridge");        
@@ -67,5 +102,13 @@ module.exports = function(grunt) {
 
     grunt.registerTask("start", "Start the GPII", function() {
         grunt.task.run("shell:startGpii");
+    });
+
+    grunt.registerTask("install", "Install system level GPII Components", function() {
+        grunt.task.run("shell:installUsbLib");
+    });
+
+    grunt.registerTask("uninstall", "Uninstall system level GPII Components", function() {
+        grunt.task.run("shell:uninstallUsbLib");
     });
 };

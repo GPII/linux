@@ -10,7 +10,11 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
+echo "This script is deprecated and will be removed in a future release. Please look at using our new grunt tasks."
+
 fileName="gpii.js"
 
 # Start the Flow Manager
 node "$fileName" $1
+
+echo "This script is deprecated and will be removed in a future release. Please look at using our new grunt tasks."

@@ -10,6 +10,8 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
+echo "This script is deprecated and will be removed in a future release. Please look at using our new grunt tasks."
+
 currentDir=`pwd`
 node_modules="../node_modules"
 universal="../node_modules/universal"
@@ -68,3 +70,5 @@ fi
 # TODO: We should install the entire GPII in /usr/local/gpii, not just the USB Listener
 sudo cp "$usbListenerDir/gpii-usb-user-listener" /usr/bin/
 sudo cp "$usbListenerDir/gpii-usb-user-listener.desktop" /usr/share/applications/
+
+echo "This script is deprecated and will be removed in a future release. Please look at using our new grunt tasks."
