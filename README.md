@@ -26,6 +26,13 @@ To fetch our core universal dependencies and build the linux specific plugins
 run
 
     grunt build
+    
+Because the history of the universal repository is quite large, it can take a
+long time to clone (and sometimes will fail depending on the network). To 
+check it out faster for testing use the fastClone option. Note however, you 
+will need the regular build in order to commit code and push on universal.
+
+    grunt build --fastClone    
 
 To clean the plugin binaries use
 
