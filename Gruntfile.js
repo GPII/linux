@@ -23,10 +23,10 @@ module.exports = function(grunt) {
                 }
             },
             command: function() {
-                return "node-gyp configure build"; 
+                return "node-gyp configure build";
             }
         };
-    }; 
+    };
 
     function nodeGypCleanShell(dir) {
         return {
@@ -59,8 +59,9 @@ module.exports = function(grunt) {
                 },
                 command: [
                     "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
-                    "sudo cp " + usbListenerDir + 
-                        "/gpii-usb-user-listener.desktop /usr/share/applications/"
+                    "sudo cp " + usbListenerDir +
+                        "/gpii-usb-user-listener.desktop /usr/share/applications/",
+                    "sudo mkdir /var/lib/gpii"
                 ].join("&&")
             },
             uninstallUsbLib: {
@@ -70,7 +71,8 @@ module.exports = function(grunt) {
                 },
                 command: [
                     "sudo rm /usr/bin/gpii-usb-user-listener",
-                    "sudo rm /usr/share/applications/gpii-usb-user-listener.desktop" 
+                    "sudo rm /usr/share/applications/gpii-usb-user-listener.desktop",
+                    "sudo rm -f /var/lib/gpii"
                 ].join("&&")
             },
             startGpii: {
@@ -89,16 +91,18 @@ module.exports = function(grunt) {
 
     grunt.registerTask("build", "Build the entire GPII", function() {
         grunt.task.run("gpiiUniversal");
-        grunt.task.run("shell:compileGSettings");        
-        grunt.task.run("shell:compileAlsaBridge");        
-        grunt.task.run("shell:compileXrandrBridge");        
+        grunt.task.run("shell:compileGSettings");
+        grunt.task.run("shell:compileAlsaBridge");
+        grunt.task.run("shell:compileXrandrBridge");
+        grunt.task.run("shell:installUsbLib");
     });
 
     grunt.registerTask("clean", "Clean the GPII binaries and uninstall", function() {
         grunt.task.run("shell:cleanGSettings");
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
-    }); 
+        grunt.task.run("shell:uninstallUsbLib");
+    });
 
     grunt.registerTask("start", "Start the GPII", function() {
         grunt.task.run("shell:startGpii");
