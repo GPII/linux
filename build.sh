@@ -20,7 +20,6 @@ node_modules="../node_modules"
 universal="../node_modules/universal"
 repoURL="git://github.com/GPII/universal.git"
 usbListenerDir="./usbDriveListener"
-gpiiInstallDir="/usr/local/gpii"
 gpiiStateDir="/var/lib/gpii"
 
 # Clone the necessary GPII framework dependencies from Git.
@@ -60,23 +59,17 @@ cd ../../..
 
 # Create standard directory structure for GPII.
 # Note: everything below here must be run as root, since we're installing ourselves centrally.
-if [ -d $gpiiInstallDir ]; then
-    echo "$gpiiInstallDir already exists"
-else
-    echo "$gpiiInstallDir does not exist"
-    echo "creating $gpiiInstallDir"
-    sudo mkdir -p "$gpiiInstallDir"
-fi
-
 if [ -d $gpiiStateDir ]; then
     echo "$gpiiStateDir already exists"
 else
     echo "$gpiiStateDir does not exist"
     echo "creating $gpiiStateDir"
     sudo mkdir -p "$gpiiStateDir"
+    sudo touch "$gpiiStateDir/log.txt"
+    sudo chmod a+rw "$gpiiStateDir/log.txt"
 fi
 
 # Install the USB Drive User Listener
 # TODO: We should install the entire GPII in /usr/local/gpii, not just the USB Listener
-sudo cp -r "$usbListenerDir/bin" "$gpiiInstallDir/bin"
-sudo cp "$usbListenerDir/80-gpii.rules" /etc/udev/rules.d/
+sudo cp "$usbListenerDir/gpii-usb-user-listener" /usr/bin/
+sudo cp "$usbListenerDir/gpii-usb-user-listener.desktop" /usr/share/applications/
