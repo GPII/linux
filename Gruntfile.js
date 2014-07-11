@@ -1,7 +1,7 @@
 /*!
 GPII Linux Personalization Framework Node.js Bootstrap
 
-Copyright 2014 RFT-US
+Copyright 2014 RTF-US
 
 Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
@@ -13,7 +13,7 @@ https://github.com/gpii/universal/LICENSE.txt
 module.exports = function(grunt) {
     var usbListenerDir = "./usbDriveListener";
 
-    function nodeGypCompileShell(dir) {
+    function nodeGypCompileShell (dir) {
         return {
             options: {
                 stdout: true,
@@ -26,9 +26,9 @@ module.exports = function(grunt) {
                 return "node-gyp configure build";
             }
         };
-    };
+    }
 
-    function nodeGypCleanShell(dir) {
+    function nodeGypCleanShell (dir) {
         return {
             options: {
                 stdout: true,
@@ -41,7 +41,7 @@ module.exports = function(grunt) {
                 return "node-gyp clean";
             }
         };
-    };
+    }
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-gpii");
 
-    grunt.registerTask("build", "Build the entire GPII", function() {
+    grunt.registerTask("build", "Build the entire GPII", function () {
         grunt.task.run("gpiiUniversal");
         grunt.task.run("shell:compileGSettings");
         grunt.task.run("shell:compileAlsaBridge");
@@ -97,22 +97,22 @@ module.exports = function(grunt) {
         grunt.task.run("shell:installUsbLib");
     });
 
-    grunt.registerTask("clean", "Clean the GPII binaries and uninstall", function() {
+    grunt.registerTask("clean", "Clean the GPII binaries and uninstall", function () {
         grunt.task.run("shell:cleanGSettings");
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
         grunt.task.run("shell:uninstallUsbLib");
     });
 
-    grunt.registerTask("start", "Start the GPII", function() {
+    grunt.registerTask("start", "Start the GPII", function () {
         grunt.task.run("shell:startGpii");
     });
 
-    grunt.registerTask("install", "Install system level GPII Components", function() {
+    grunt.registerTask("install", "Install system level GPII Components", function () {
         grunt.task.run("shell:installUsbLib");
     });
 
-    grunt.registerTask("uninstall", "Uninstall system level GPII Components", function() {
+    grunt.registerTask("uninstall", "Uninstall system level GPII Components", function () {
         grunt.task.run("shell:uninstallUsbLib");
     });
 };

@@ -1,9 +1,9 @@
 {
   "name": "gpii-linux",
-  "description": "Components of the GPII personalization infrastructure for use on linux",
+  "description": "Components of the GPII personalization infrastructure for use on Linux",
   "version": "0.0.1",
   "author": "GPII",
-  "bugs": "http://wiki.gpii.net/index.php/Main_Page",
+  "bugs": "http://issues.gpii.net/browse/GPII",
   "homepage": "http://gpii.net/",
   "dependencies": {},
   "devDependencies": {
@@ -30,6 +30,6 @@
   "repository": "git://github.com/GPII/linux.git",
   "main": "./gpii/index.js",
   "engines": {
-    "node": ">=0.1.9"
+    "node": ">=0.6.0"
   }
 }
