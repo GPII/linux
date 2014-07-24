@@ -29,8 +29,7 @@ var testDefs = [
                 "data": [{
                     "settings": {
                         "mag-factor": 1.5,
-                        "screen-position": "full-screen",
-                        "show-cross-hairs": false
+                        "screen-position": "full-screen"
                      },
                      "options": {
                          "schema": "org.gnome.desktop.a11y.magnifier"
@@ -64,8 +63,7 @@ var testDefs = [
                 "data": [{
                     "settings": {
                         "mag-factor": 1.5,
-                        "screen-position": "full-screen",
-                        "show-cross-hairs": false
+                        "screen-position": "full-screen"
                      },
                      "options": {
                          "schema": "org.gnome.desktop.a11y.magnifier"
