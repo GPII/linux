@@ -10,6 +10,8 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
+echo "This script is deprecated and will be removed in a future release. Please look at using our new grunt tasks."
+
 cd node_modules/gsettingsBridge/nodegsettings
 node-gyp clean
 rm -rf build
@@ -32,3 +34,5 @@ sudo rm -f /etc/udev/rules.d/80-gpii.rules
 # TODO: It seems extremely dangerous to go around deleting the node_modules directory we installed,
 # in case the developer has unpushed modifications in there.
 # rm -rf ../node_modules
+
+echo "This script is deprecated and will be removed in a future release. Please look at using our new grunt tasks."
