@@ -2,6 +2,7 @@
 GPII Linux Personalization Framework Node.js Bootstrap
 
 Copyright 2014 RTF-US
+Copyright 2014 Emergya
 
 Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
@@ -52,6 +53,8 @@ module.exports = function(grunt) {
             cleanAlsaBridge: nodeGypCleanShell("node_modules/alsa/nodealsa"),
             compileXrandrBridge: nodeGypCompileShell("node_modules/xrandr/nodexrandr"),
             cleanXrandrBridge: nodeGypCleanShell("node_modules/xrandr/nodexrandr"),
+            compilePackageKitBridge: nodeGypCompileShell("node_modules/packagekit/nodepackagekit"),
+            cleanPackageKitBridge: nodeGypCleanShell("node_modules/packagekit/nodepackagekit"),
             installUsbLib: {
                 options: {
                     stdout: true,
@@ -94,6 +97,7 @@ module.exports = function(grunt) {
         grunt.task.run("shell:compileGSettings");
         grunt.task.run("shell:compileAlsaBridge");
         grunt.task.run("shell:compileXrandrBridge");
+        grunt.task.run("shell:compilePackageKitBridge");
         grunt.task.run("shell:installUsbLib");
     });
 
@@ -101,6 +105,7 @@ module.exports = function(grunt) {
         grunt.task.run("shell:cleanGSettings");
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
+        grunt.task.run("shell:cleanPackageKitBridge");
         grunt.task.run("shell:uninstallUsbLib");
     });
 
