@@ -41,18 +41,18 @@ https://github.com/gpii/universal/LICENSE.txt
     fluid.defaults("gpii.xrandr.setScreenResolution", {
         gradeNames: "fluid.function",
         argumentMap: {
-            value: 0,
+            value: 0
         }
     });
 
-    gpii.xrandr.getBrightness = function(){
+    gpii.xrandr.getBrightness = function () {
         return xrandr.getBrightness().value;
     };
 
-    gpii.xrandr.getScreenResolution = function(){
+    gpii.xrandr.getScreenResolution = function () {
         var displayInfo = xrandr.getDisplays();
         for (var i=0; i<displayInfo.length; i++) {
-            if (displayInfo[i].status == 'connected') {
+            if (displayInfo[i].status === "connected") {
                 break;
             }
         }
@@ -63,53 +63,50 @@ https://github.com/gpii/universal/LICENSE.txt
         };
     };
 
-    gpii.xrandr.setBrightness = function(value){
+    gpii.xrandr.setBrightness = function (value) {
         return xrandr.setBrightness(value);
     };
 
-    gpii.xrandr.setScreenResolution = function(value){
+    gpii.xrandr.setScreenResolution = function (value) {
         var current = gpii.xrandr.getScreenResolution();
-        if (JSON.stringify(value) == JSON.stringify(current)) {
+        if (JSON.stringify(value) === JSON.stringify(current)) {
             return true;
         } else {
             return xrandr.setScreenResolution(value.width, value.height);
         }
     };
+    
+    gpii.xrandr.allSettings = {
+        "screen-brightness": {
+            get: "gpii.xrandr.getBrightness",
+            set: "gpii.xrandr.setBrightness"
+        },
+        "screen-resolution": {
+            get: "gpii.xrandr.getScreenResolution",
+            set: "gpii.xrandr.setScreenResolution"
+        }
+    };
+    
+    gpii.xrandr.getImpl = function (settingsRequest) {
+        settingsRequest = settingsRequest || gpii.xrandr.allSettings;
+        var settings = fluid.transform(settingsRequest, function (key) {
+            var funcEntry = gpii.xrandr.allSettings[key];
+            if (funcEntry) {
+                return fluid.invokeGlobalFunction(funcEntry.set);
+            } else {
+                fluid.fail("Invalid key to Xrandr settings handler - " +
+                    key + " - valid choices are " + JSON.stringify(fluid.keys(gpii.xrandr.allSettings)));
+            }
+        });
+        return settings;
+    };
 
-    gpii.xrandr.get = function(settingsarray) {
+    gpii.xrandr.get = function (settingsarray) {
         var app = fluid.copy(settingsarray);
         for (var appId in app) {
             for (var j = 0; j < app[appId].length; j++) {
-                var settings = app[appId][j].settings;
-                var keys = ['screen-brightness', 'screen-resolution'];
+                var settings = gpii.xrandr.getImpl(app[appId][j].settings);
 
-                if (settings === null) {
-                    settings = {};
-                    for (var k = 0; k < keys.length; k++) {
-                        var key = keys[k];
-                        if (key == 'screen-brightness') {
-                            settings[key] = gpii.xrandr.getBrightness();
-                        } else if (key == 'screen-resolution') {
-                            settings[key] = gpii.xrandr.getScreenResolution();
-                        } else {
-                            var err = "Invalid key: " + key;
-                            fluid.fail(err);
-                            fluid.log(err);
-                        }
-                    }
-                } else {
-                    for (var settingKey in settings) {
-                        if (settingKey == 'screen-brightness') {
-                            settings[settingKey] = gpii.xrandr.getBrightness();
-                        } else if (key == 'screen-resolution') {
-                            settings[settingKey] = gpii.xrandr.getScreenResolution();
-                        } else {
-                            var err = "Invalid key: " + settingKey;
-                            fluid.fail(err);
-                            fluid.log(err);
-                        }
-                    }
-                }
                 var noOptions = { settings: settings };
                 app[appId][j] = noOptions;
             }
@@ -117,7 +114,7 @@ https://github.com/gpii/universal/LICENSE.txt
         return app;
     };
 
-    gpii.xrandr.set = function(settingsarray) {
+    gpii.xrandr.set = function (settingsarray) {
         var app = fluid.copy(settingsarray);
         for (var appId in app) {
             for (var j = 0; j < app[appId].length; j++) {
@@ -127,10 +124,10 @@ https://github.com/gpii/universal/LICENSE.txt
                     var value = settings[settingKey];
 
                     var oldValue;
-                    if (settingKey == 'screen-brightness') {
+                    if (settingKey === "screen-brightness") {
                         oldValue = gpii.xrandr.getBrightness();
                         gpii.xrandr.setBrightness(value);
-                    } else if (settingKey == 'screen-resolution') {
+                    } else if (settingKey === "screen-resolution") {
                         oldValue = gpii.xrandr.getScreenResolution();
                         gpii.xrandr.setScreenResolution(value);
                     } else {
@@ -149,6 +146,6 @@ https://github.com/gpii/universal/LICENSE.txt
             }
         }
         return app;
-    }
+    };
 
 })();

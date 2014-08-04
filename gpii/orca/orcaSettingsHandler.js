@@ -16,14 +16,14 @@
 
     var fluid = require("universal");
     var gpii = fluid.registerNamespace("gpii");
-    var fs = require("fs");
     var spawn = require("child_process").spawn;
+    var fs = require("fs");
     var path = require("path");
 
     // Workaround to load orca's user-settings.conf file according to
     // comments on https://github.com/joyent/node/issues/6073
     //
-    require.extensions['.conf'] = require.extensions['.json'];
+    require.extensions[".conf"] = require.extensions[".json"];
 
     var ORCA_ARGS = ["--disable", "speech",
                      "--disable", "braille",
@@ -71,7 +71,7 @@
         var curDate;
 
         do { curDate = new Date(); }
-        while(curDate-date < millis);
+        while (curDate-date < millis);
     }
 
     function applySettings(app) {
@@ -92,7 +92,7 @@
                       " has requested these following settings: ", settings);
 
             for (var k in settings) {
-              fluid.set(customizedProfile, k, settings[k], fluid.model.escapedSetConfig);
+                fluid.set(customizedProfile, k, settings[k], fluid.model.escapedSetConfig);
             }
 
             customizedProfile.profile = customizedProfile.activeProfile =
@@ -124,8 +124,6 @@
         var app = fluid.copy(payload);
 
         var settings = fluid.get(app, "data.0.settings");
-        var options = fluid.get(app, "data.0.options");
-        var user = options.user;
 
         var newSettingsResponse = {};
         var userRequestedSettings = settings;
@@ -138,8 +136,8 @@
             newSettingsResponse[settingKey] = value;
         });
 
-        var noOptions = {settings: newSettingsResponse}
-        app["data"][0] = noOptions;
+        var noOptions = {settings: newSettingsResponse};
+        app.data[0] = noOptions;
 
         return app;
     };
@@ -154,8 +152,8 @@
             var maxPass = 10;
             var err;
 
-            while(!fs.existsSync(orcaSettingsFile)) {
-                if (pass == maxPass) {
+            while (!fs.existsSync(orcaSettingsFile)) {
+                if (pass === maxPass) {
                     err = "Time limit exceeded [" + maxPass*500 +
                           "ms] for creating Orca's configuration file";
                     break;
@@ -173,7 +171,7 @@
         }
 
         var returnValue = applySettings(profile);
-        fluid.set(returnObj, ['org.gnome.orca', 0], returnValue);
+        fluid.set(returnObj, ["org.gnome.orca", 0], returnValue);
 
         return returnObj;
     };

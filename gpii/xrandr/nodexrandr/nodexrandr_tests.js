@@ -10,6 +10,8 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
+"use strict";
+
 var fluid = require("universal"),
     jqUnit = fluid.require("jqUnit"),
     xrandr = require("./build/Release/nodexrandr.node");
@@ -21,7 +23,7 @@ jqUnit.test("Running tests for Xrandr Bridge", function () {
 
     // Check if all required methods are available through the Xrandr Bridge
     //
-    methods = ["getBrightness", "setBrightness",
+    var methods = ["getBrightness", "setBrightness",
                "getDisplays", "setScreenResolution"];
 
     for (var method in methods) {

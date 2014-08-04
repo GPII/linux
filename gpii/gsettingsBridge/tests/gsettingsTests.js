@@ -10,10 +10,11 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
-/*global console, __dirname, setTimeout, require */
+/*global require */
+
+"use strict";
 
 (function () {
-    // This loads universal.
     var fluid = require("universal"),
         gpii = fluid.registerNamespace("gpii"),
         jqUnit = fluid.require("jqUnit");
@@ -153,7 +154,7 @@ https://github.com/gpii/universal/LICENSE.txt
                         "double-setting": 5.0,
                         "boolean-setting": false,
                         "string-setting": "abcdefg"
-                    },
+                    }
                 }, {
                     settings: {
                         "other-string-setting": "hello world"
@@ -183,27 +184,27 @@ https://github.com/gpii/universal/LICENSE.txt
 
     jqUnit.module("Gsettings Handler Tests");
 
-    jqUnit.test("Getting single keys via gsettings handler", function() {
-        //First check reading single keys ... the default values:
-         jqUnit.assertEquals("Checking 'double' key", 5.0,
+    jqUnit.test("Getting single keys via gsettings handler", function () {
+        // First check reading single keys ... the default values:
+        jqUnit.assertEquals("Checking 'double' key", 5.0,
             gpii.gsettings.getSingleKey("net.gpii.testing.gsettings.single-get", "double-setting"));
-         jqUnit.assertEquals("Checking 'boolean' key", false,
+        jqUnit.assertEquals("Checking 'boolean' key", false,
             gpii.gsettings.getSingleKey("net.gpii.testing.gsettings.single-get", "boolean-setting"));
-         jqUnit.assertEquals("Checking 'string' key", "abcdefg",
+        jqUnit.assertEquals("Checking 'string' key", "abcdefg",
             gpii.gsettings.getSingleKey("net.gpii.testing.gsettings.single-get", "string-setting"));
     });
 
 
-    jqUnit.test("Setting single keys via gsettings handler", function() {
-        //set and check double value
+    jqUnit.test("Setting single keys via gsettings handler", function () {
+        // set and check double value
         gpii.gsettings.setSingleKey("net.gpii.testing.gsettings.single-set", "double-setting", 6.789);
         jqUnit.assertEquals("Checking 'double' key", 6.789,
             gpii.gsettings.getSingleKey("net.gpii.testing.gsettings.single-set", "double-setting"));
-        //set and check boolean value
+        // set and check boolean value
         gpii.gsettings.setSingleKey("net.gpii.testing.gsettings.single-set", "boolean-setting", true);
         jqUnit.assertEquals("Checking 'boolean' key", true,
             gpii.gsettings.getSingleKey("net.gpii.testing.gsettings.single-set", "boolean-setting"));
-        //set and check string value
+        // set and check string value
         gpii.gsettings.setSingleKey("net.gpii.testing.gsettings.single-set", "string-setting", "Absolutely awesome");
         jqUnit.assertEquals("Checking 'string' key", "Absolutely awesome",
             gpii.gsettings.getSingleKey("net.gpii.testing.gsettings.single-set", "string-setting"));
@@ -231,7 +232,7 @@ https://github.com/gpii/universal/LICENSE.txt
 
     jqUnit.test("GPII-8 Not core dumping on a non-existent key", function () {
         var response = gpii.gsettings.set(gpii8.request);
-        jqUnit.assertEquals("Didn't core dump. ", true,true);
+        jqUnit.assertValue("Didn't core dump.", response);
     });
 
 }());

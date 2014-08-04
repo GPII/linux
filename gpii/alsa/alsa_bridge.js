@@ -56,30 +56,29 @@ https://github.com/gpii/universal/LICENSE.txt
 
     gpii.alsa.get = function (payload){
         var app = fluid.copy(payload);
-        var settings = fluid.copy(app, "data.0.settings");
 
         var newSettingsResponse = {masterVolume: gpii.alsa.getSystemVolume()};
         var noOptions = {settings: newSettingsResponse};
-        app["data"][0] = noOptions;
+        app.data[0] = noOptions;
 
         return app;
     };
 
     gpii.alsa.set = function (payload){
         var app = fluid.copy(payload);
-        var settings = app['org.alsa-project'][0].settings;
+        var settings = app["org.alsa-project"][0].settings;
 
         var oldValue = alsa.getSystemVolume();
-        alsa.setSystemVolume(settings['masterVolume']);
+        alsa.setSystemVolume(settings.masterVolume);
 
         var newSettingsResponse = {};
-        newSettingsResponse['masterVolume'] = {
-                "oldValue": oldValue,
-                "newValue": settings['masterVolume']
-            };
+        newSettingsResponse.masterVolume = {
+            "oldValue": oldValue,
+            "newValue": settings.masterVolume
+        };
 
         var noOptions = {settings: newSettingsResponse};
-        fluid.set(app, ['org.alsa-project', 0], noOptions);
+        fluid.set(app, ["org.alsa-project", 0], noOptions);
 
         return app;
     };

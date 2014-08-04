@@ -11,11 +11,10 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
-/*global require,process*/
+/*global require*/
 
 "use strict";
 var fluid = require("universal"),
-    path = require("path"),
     gpii = fluid.registerNamespace("gpii");
 
 fluid.require("./AcceptanceTests_include", require);
@@ -66,7 +65,7 @@ var testDefs = [
             }
         ]
     },
-    {                                                                                               
+    {
         name: "Testing screenreader_orca using Flat matchmaker",
         token: "screenreader_orca",
         settingsHandlers: {
@@ -151,7 +150,7 @@ var testDefs = [
                 "expectRestored": "false"
             }
         ]
-    } 
+    }
 ];
 
 gpii.acceptanceTesting.linux.runTests("orca_config", testDefs);

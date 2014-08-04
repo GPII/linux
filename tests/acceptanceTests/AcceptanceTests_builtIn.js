@@ -11,11 +11,10 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
-/*global require,process*/
+/*global require*/
 
 "use strict";
 var fluid = require("universal"),
-    path = require("path"),
     gpii = fluid.registerNamespace("gpii");
 
 fluid.require("./AcceptanceTests_include", require);
@@ -25,17 +24,17 @@ var testDefs = [
         name: "Testing os_common using Flat matchmaker",
         token: "os_common",
         settingsHandlers: {
-           "gpii.gsettings": {
+            "gpii.gsettings": {
                 "data": [{
                     "settings": {
                         "mag-factor": 1.5,
                         "screen-position": "full-screen",
                         "show-cross-hairs": false
-                     },
-                     "options": {
-                         "schema": "org.gnome.desktop.a11y.magnifier"
                     },
-                } , {
+                    "options": {
+                        "schema": "org.gnome.desktop.a11y.magnifier"
+                    }
+                }, {
                     "settings": {
                         "gtk-theme": "HighContrast",
                         "icon-theme": "HighContrast",
@@ -60,17 +59,17 @@ var testDefs = [
         name: "Testing os_gnome using Flat matchmaker",
         token: "os_gnome",
         settingsHandlers: {
-           "gpii.gsettings": {
+            "gpii.gsettings": {
                 "data": [{
                     "settings": {
                         "mag-factor": 1.5,
                         "screen-position": "full-screen",
                         "show-cross-hairs": false
-                     },
-                     "options": {
-                         "schema": "org.gnome.desktop.a11y.magnifier"
                     },
-                } , {
+                    "options": {
+                        "schema": "org.gnome.desktop.a11y.magnifier"
+                    }
+                }, {
                     "settings": {
                         "text-scaling-factor": 0.75,
                         "cursor-size": 90
@@ -100,15 +99,15 @@ var testDefs = [
         name: "Testing os_win7 using Flat matchmaker",
         token: "os_win7",
         settingsHandlers: {
-           "gpii.gsettings": {
+            "gpii.gsettings": {
                 "data": [{
                     "settings": {
                         "mag-factor": 1.5,
                         "screen-position": "full-screen"
-                     },
-                     "options": {
-                         "schema": "org.gnome.desktop.a11y.magnifier"
                     },
+                    "options": {
+                        "schema": "org.gnome.desktop.a11y.magnifier"
+                    }
                 } , {
                     "settings": {
                         "gtk-theme":"HighContrast",

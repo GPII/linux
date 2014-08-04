@@ -15,8 +15,6 @@ https://github.com/gpii/universal/LICENSE.txt
 
     var fluid = require("universal");
     var gpii = fluid.registerNamespace("gpii");
-    var exec = require("child_process").exec;
-    var util = require("util");
     var nodeGSettings = require("./nodegsettings/build/Release/nodegsettings.node");
 
     fluid.registerNamespace("gpii.launch");
@@ -64,7 +62,9 @@ https://github.com/gpii/universal/LICENSE.txt
                 }
                 else {
                     for (var settingKey in settings) {
-                        if (keys.indexOf(settingKey) == -1) continue;
+                        if (keys.indexOf(settingKey) === -1) {
+                            continue;
+                        }
                         settings[settingKey] = nodeGSettings.get_gsetting(schemaId,settingKey);
                     }
                 }
@@ -84,7 +84,9 @@ https://github.com/gpii/universal/LICENSE.txt
                 var keys = nodeGSettings.get_gsetting_keys(schemaId);
 
                 for (var settingKey in settings) {
-                    if (keys.indexOf(settingKey) == -1) continue;
+                    if (keys.indexOf(settingKey) === -1) {
+                        continue;
+                    }
                     var value = settings[settingKey];
                     var oldValue = nodeGSettings.get_gsetting(schemaId,settingKey);
                     nodeGSettings.set_gsetting(schemaId,settingKey,value);
@@ -98,6 +100,6 @@ https://github.com/gpii/universal/LICENSE.txt
             }
         }
         return app;
-    }
+    };
 
 })();
