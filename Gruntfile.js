@@ -14,6 +14,7 @@ https://github.com/gpii/universal/LICENSE.txt
 
 module.exports = function(grunt) {
 
+    grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-gpii");
@@ -48,12 +49,12 @@ module.exports = function(grunt) {
                 stderr: true,
                 failOnError: true
             },
-            compileGSettings: nodeGypShell("node-gyp configure build", "node_modules/gsettingsBridge/nodegsettings"),
-            cleanGSettings: nodeGypShell("node-gyp clean", "node_modules/gsettingsBridge/nodegsettings"),
-            compileAlsaBridge: nodeGypShell("node-gyp configure build", "node_modules/alsa/nodealsa"),
-            cleanAlsaBridge: nodeGypShell("node-gyp clean", "node_modules/alsa/nodealsa"),
-            compileXrandrBridge: nodeGypShell("node-gyp configure build", "node_modules/xrandr/nodexrandr"),
-            cleanXrandrBridge: nodeGypShell("node-gyp clean", "node_modules/xrandr/nodexrandr"),
+            compileGSettings: nodeGypShell("node-gyp configure build", "gpii/node_modules/gsettingsBridge/nodegsettings"),
+            cleanGSettings: nodeGypShell("node-gyp clean", "gpii/node_modules/gsettingsBridge/nodegsettings"),
+            compileAlsaBridge: nodeGypShell("node-gyp configure build", "gpii/node_modules/alsa/nodealsa"),
+            cleanAlsaBridge: nodeGypShell("node-gyp clean", "gpii/node_modules/alsa/nodealsa"),
+            compileXrandrBridge: nodeGypShell("node-gyp configure build", "gpii/node_modules/xrandr/nodexrandr"),
+            cleanXrandrBridge: nodeGypShell("node-gyp clean", "gpii/node_modules/xrandr/nodexrandr"),
             installUsbLib: {
                 command: [
                     "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
