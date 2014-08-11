@@ -15,14 +15,14 @@ var fluid = require("universal"),
 
 // Settings Handlers
 //
-fluid.require("gsettingsBridge", require);
-fluid.require("orca", require);
-fluid.require("alsa", require);
-fluid.require("xrandr", require);
+fluid.require("./gpii/node_modules/gsettingsBridge", require);
+fluid.require("./gpii/node_modules/orca", require);
+fluid.require("./gpii/node_modules/alsa", require);
+fluid.require("./gpii/node_modules/xrandr", require);
 
 // Device Reporters
 //
-fluid.require("packagekit", require);
+fluid.require("./gpii/node_modules/packagekit", require);
 
 kettle.config.makeConfigLoader({
     nodeEnv: kettle.config.getNodeEnv("fm.ps.sr.dr.mm.os.lms.development"),

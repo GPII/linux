@@ -10,6 +10,8 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
+"use strict";
+
 var fluid = require("universal"),
     jqUnit = fluid.require("jqUnit"),
     alsa = require("./build/Release/nodealsa.node");
@@ -21,7 +23,7 @@ jqUnit.test("Running tests for ALSA bindings", function () {
 
     // Check if all required methods are available
     //
-    methods = ["getSystemVolume", "setSystemVolume"];
+    var methods = ["getSystemVolume", "setSystemVolume"];
 
     for (var method in methods) {
         jqUnit.assertTrue("Checking availability of method '" + method + "'",

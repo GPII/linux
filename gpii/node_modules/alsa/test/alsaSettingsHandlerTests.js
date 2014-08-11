@@ -10,12 +10,13 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
+"use strict";
+
 var fluid = require("universal"),
-    gpii = fluid.registerNamespace("gpii"),
     jqUnit = fluid.require("jqUnit");
 
 require("alsa");
-alsa = fluid.registerNamespace("gpii.alsa");
+var alsa = fluid.registerNamespace("gpii.alsa");
 
 jqUnit.module("GPII Node.js ALSA Volume Bridge");
 
@@ -25,7 +26,7 @@ jqUnit.test("Running tests for ALSA Settings Handler", function () {
     // Check if all required methods are available through the
     // ALSA Settings Handler.
     //
-    methods = ["getSystemVolume", "setSystemVolume", "get", "set"];
+    var methods = ["getSystemVolume", "setSystemVolume", "get", "set"];
     for (var method in methods) {
         jqUnit.assertTrue("Checking availability of method '" + method + "'",
                           (methods[method] in alsa));
@@ -42,16 +43,16 @@ jqUnit.test("Running tests for ALSA Settings Handler", function () {
     var returnPayload = alsa.set(payload);
 
     jqUnit.assertDeepEq("The system volume is being setted well",
-            returnPayload["org.alsa-project"][0].settings["masterVolume"].newValue,
-            payload["org.alsa-project"][0].settings["masterVolume"]);
+            returnPayload["org.alsa-project"][0].settings.masterVolume.newValue,
+            payload["org.alsa-project"][0].settings.masterVolume);
 
     var newPayload = fluid.copy(payload);
-    newPayload["org.alsa-project"][0].settings["masterVolume"] =
-        returnPayload["org.alsa-project"][0].settings["masterVolume"].oldValue;
+    newPayload["org.alsa-project"][0].settingsmasterVolume =
+        returnPayload["org.alsa-project"][0].settingsmasterVolume.oldValue;
 
-    lastPayload = alsa.set(newPayload);
+    var lastPayload = alsa.set(newPayload);
 
     jqUnit.assertDeepEq("The system volume is being restored well",
-            returnPayload["org.alsa-project"][0].settings["masterVolume"].oldValue,
-            lastPayload["org.alsa-project"][0].settings["masterVolume"].newValue);
+            returnPayload["org.alsa-project"][0].settings.masterVolume.oldValue,
+            lastPayload["org.alsa-project"][0].settings.masterVolume.newValue);
 });

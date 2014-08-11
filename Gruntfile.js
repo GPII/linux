@@ -11,55 +11,56 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
+"use strict";
+
 module.exports = function(grunt) {
+
+    grunt.loadNpmTasks("grunt-shell");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-jsonlint");
+    grunt.loadNpmTasks("grunt-gpii");
+  
     var usbListenerDir = "./usbDriveListener";
-
-    function nodeGypCompileShell (dir) {
+    var gypCompileCmd = "node-gyp configure build";
+    var gypCleanCmd = "node-gyp clean";
+    
+    function nodeGypShell (cmd, cwd) {
         return {
             options: {
-                stdout: true,
-                stderr: true,
                 execOptions: {
-                    cwd: dir
+                    cwd: cwd
                 }
             },
-            command: function() {
-                return "node-gyp configure build";
-            }
-        };
-    }
-
-    function nodeGypCleanShell (dir) {
-        return {
-            options: {
-                stdout: true,
-                stderr: true,
-                execOptions: {
-                    cwd: dir
-                }
-            },
-            command: function() {
-                return "node-gyp clean";
-            }
+            command: cmd
         };
     }
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+        jshint: {
+            src: ["gpii/**/*.js", "tests/**/*.js"],
+            buildScripts: ["Gruntfile.js"],
+            options: {
+                jshintrc: true
+            }
+        },
+        jsonlint: {
+            src: ["gpii/**/*.json", "tests/**/*.json"]
+        },
         shell: {
-            compileGSettings: nodeGypCompileShell("node_modules/gsettingsBridge/nodegsettings"),
-            cleanGSettings: nodeGypCleanShell("node_modules/gsettingsBridge/nodegsettings"),
-            compileAlsaBridge: nodeGypCompileShell("node_modules/alsa/nodealsa"),
-            cleanAlsaBridge: nodeGypCleanShell("node_modules/alsa/nodealsa"),
-            compileXrandrBridge: nodeGypCompileShell("node_modules/xrandr/nodexrandr"),
-            cleanXrandrBridge: nodeGypCleanShell("node_modules/xrandr/nodexrandr"),
-            compilePackageKitBridge: nodeGypCompileShell("node_modules/packagekit/nodepackagekit"),
-            cleanPackageKitBridge: nodeGypCleanShell("node_modules/packagekit/nodepackagekit"),
+            options: {
+                stdout: true,
+                stderr: true,
+                failOnError: true
+            },
+            compileGSettings: nodeGypShell(gypCompileCmd, "gpii/node_modules/gsettingsBridge/nodegsettings"),
+            cleanGSettings: nodeGypShell(gypCleanCmd, "gpii/node_modules/gsettingsBridge/nodegsettings"),
+            compileAlsaBridge: nodeGypShell(gypCompileCmd, "gpii/node_modules/alsa/nodealsa"),
+            cleanAlsaBridge: nodeGypShell(gypCleanCmd, "gpii/node_modules/alsa/nodealsa"),
+            compileXrandrBridge: nodeGypShell(gypCompileCmd, "gpii/node_modules/xrandr/nodexrandr"),
+            cleanXrandrBridge: nodeGypShell(gypCleanCmd, "gpii/node_modules/xrandr/nodexrandr"),
+            compilePackageKitBridge: nodeGypShell(gypCompileCmd, "gpii/node_modules/packagekit/nodepackagekit"),
+            cleanPackageKitBridge: nodeGypShell(gypCleanCmd, "gpii/node_modules/packagekit/nodepackagekit"),
             installUsbLib: {
-                options: {
-                    stdout: true,
-                    stderr: true
-                },
                 command: [
                     "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
                     "sudo cp " + usbListenerDir +
@@ -68,10 +69,6 @@ module.exports = function(grunt) {
                 ].join("&&")
             },
             uninstallUsbLib: {
-                options: {
-                    stdout: true,
-                    stderr: true
-                },
                 command: [
                     "sudo rm /usr/bin/gpii-usb-user-listener",
                     "sudo rm /usr/share/applications/gpii-usb-user-listener.desktop",
@@ -79,21 +76,13 @@ module.exports = function(grunt) {
                 ].join("&&")
             },
             startGpii: {
-                options: {
-                    stdout: true,
-                    stderr: true
-                },
-                command: function() {
-                    return "node gpii.js";
-                }
+                command: "node gpii.js"
             }
         }
     });
 
-    grunt.loadNpmTasks("grunt-gpii");
-
     grunt.registerTask("build", "Build the entire GPII", function () {
-        grunt.task.run("gpiiUniversal");
+        grunt.task.run("gpii-universal");
         grunt.task.run("shell:compileGSettings");
         grunt.task.run("shell:compileAlsaBridge");
         grunt.task.run("shell:compileXrandrBridge");

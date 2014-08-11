@@ -10,12 +10,13 @@ You may obtain a copy of the License at
 https://github.com/gpii/universal/LICENSE.txt
 */
 
+"use strict";
+
 var fluid = require("universal"),
-    gpii = fluid.registerNamespace("gpii"),
     jqUnit = fluid.require("jqUnit");
 
 require("xrandr");
-xrandr = fluid.registerNamespace("gpii.xrandr");
+var xrandr = fluid.registerNamespace("gpii.xrandr");
 
 jqUnit.module("GPII Xrandr Module");
 
@@ -25,7 +26,7 @@ jqUnit.test("Running tests for Xrandr Bridge", function () {
     // Check if all required methods are available through the
     // Xrandr Settings Handler.
     //
-    methods = ["getBrightness", "getScreenResolution", "setBrightness",
+    var methods = ["getBrightness", "getScreenResolution", "setBrightness",
                "setScreenResolution", "get", "set"];
     for (var method in methods) {
         jqUnit.assertTrue("Checking availability of method '" + method + "'",
@@ -57,7 +58,7 @@ jqUnit.test("Running tests for Xrandr Bridge", function () {
     newPayload["org.freedesktop.xrandr"][0].settings["screen-brightness"] =
         returnPayload["org.freedesktop.xrandr"][0].settings["screen-brightness"].oldValue;
 
-    lastPayload = xrandr.set(newPayload);
+    var lastPayload = xrandr.set(newPayload);
 
     jqUnit.assertDeepEq("The resolution is being restored well",
             returnPayload["org.freedesktop.xrandr"][0].settings["screen-resolution"].oldValue,
