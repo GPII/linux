@@ -29,7 +29,9 @@ var testDefs = [
                     "settings": {
                         "mag-factor": 1.5,
                         "screen-position": "full-screen",
-                        "show-cross-hairs": false
+                        "show-cross-hairs": false,
+                        "mouse-tracking": "proportional",
+                        "caret-tracking": "proportional"
                     },
                     "options": {
                         "schema": "org.gnome.desktop.a11y.magnifier"
@@ -103,7 +105,9 @@ var testDefs = [
                 "data": [{
                     "settings": {
                         "mag-factor": 1.5,
-                        "screen-position": "full-screen"
+                        "screen-position": "full-screen",
+                        "caret-tracking": "proportional",
+                        "mouse-tracking": "proportional"
                     },
                     "options": {
                         "schema": "org.gnome.desktop.a11y.magnifier"
