@@ -55,6 +55,8 @@ module.exports = function(grunt) {
             cleanAlsaBridge: nodeGypShell("node-gyp clean", "gpii/node_modules/alsa/nodealsa"),
             compileXrandrBridge: nodeGypShell("node-gyp configure build", "gpii/node_modules/xrandr/nodexrandr"),
             cleanXrandrBridge: nodeGypShell("node-gyp clean", "gpii/node_modules/xrandr/nodexrandr"),
+            compileProcesses: nodeGypShell("node-gyp configure build", "gpii/node_modules/processReporter/nodeprocesses"),
+            cleanProcesses: nodeGypShell("node-gyp clean", "gpii/node_modules/processReporter/nodeprocesses"),
             installUsbLib: {
                 command: [
                     "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
