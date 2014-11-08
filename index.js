@@ -1,7 +1,8 @@
 /*
- * GPII Node.js ALSA Volume Bridge
+ * GPII Linux Personalization Framework Node.js Index
  *
- * Copyright 2013 Emergya
+ * Copyright 2012 OCAD University
+ * Copyright 2014 Lucendo Development Ltd.
  *
  * Licensed under the New BSD license. You may not use this file except in
  * compliance with this License.
@@ -13,9 +14,3 @@
  * You may obtain a copy of the License at
  * https://github.com/GPII/universal/blob/master/LICENSE.txt
  */
-
-var fluid = require("universal");
-
-var loader = fluid.getLoader(__dirname);
-
-loader.require("./alsa_bridge.js");
