@@ -1,4 +1,4 @@
-/*
+ /*
  * GPII Linux Personalization Framework Node.js Index
  *
  * Copyright 2012 OCAD University
@@ -14,3 +14,12 @@
  * You may obtain a copy of the License at
  * https://github.com/GPII/universal/blob/master/LICENSE.txt
  */
+ 
+var fluid = require("universal");
+
+fluid.module.register("gpii-linux", __dirname, require);
+
+fluid.require("./gpii/node_modules/gsettingsBridge", require);
+fluid.require("./gpii/node_modules/orca", require);
+fluid.require("./gpii/node_modules/alsa", require);
+fluid.require("./gpii/node_modules/xrandr", require);

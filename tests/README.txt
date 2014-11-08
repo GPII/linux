@@ -15,12 +15,11 @@ directory of the GPII universal project checked out as part of the current build
 In order to filter only a subset of the available suites, you can supply extra
 command line arguments which will be checked as substrings of the test suite files.
 
-For example, to run only the suites testing built-in adaptations of windows, run
+For example, to run only the suites testing built-in adaptations of Linux, run
 
     node AcceptanceTests.js builtIn
     
-Or to run only the tests for the NVDA screenreader, run
+Or to run only the tests for the orca screenreader, run
 
-    node AcceptanceTests.js nvda
-    
+    node AcceptanceTests.js orca
     
