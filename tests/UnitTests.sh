@@ -13,10 +13,22 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
-node ../gpii/node_modules/alsa/test/alsaSettingsHandlerTests.js
-../gpii/node_modules/gsettingsBridge/tests/runUnitTests.sh
-node ../gpii/node_modules/gsettingsBridge/nodegsettings/nodegsettings_tests.js
-node ../gpii/node_modules/orca/test/orcaSettingsHandlerTests.js
+pushd
+cd ../gpii/node_modules/alsa/test
+node alsaSettingsHandlerTests.js
+popd
+
+pushd
+cd ../gpii/node_modules/gsettingsBridge/tests
+./runUnitTests.sh
+cd ../nodegsettings
+node .//nodegsettings_tests.js
+popd
+
+pushd
+cd ../gpii/node_modules/orca/test
+node orcaSettingsHandlerTests.js
+popd
 
 # These XRANDR tests crash out on my system (AMB - Fedora 19 64-bit in VMWare Workstation 10.0.1 on Windows 7 64-bit) 
 # node ../gpii/node_modules/xrandr/nodexrandr/nodexrandr_tests.js
