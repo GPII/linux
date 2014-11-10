@@ -13,19 +13,19 @@
 # You may obtain a copy of the License at
 # https://github.com/gpii/universal/LICENSE.txt
 
-pushd
+pushd .
 cd ../gpii/node_modules/alsa/test
 node alsaSettingsHandlerTests.js
 popd
 
-pushd
+pushd .
 cd ../gpii/node_modules/gsettingsBridge/tests
 ./runUnitTests.sh
 cd ../nodegsettings
 node .//nodegsettings_tests.js
 popd
 
-pushd
+pushd .
 cd ../gpii/node_modules/orca/test
 node orcaSettingsHandlerTests.js
 popd
