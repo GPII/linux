@@ -60,7 +60,7 @@ module.exports = function(grunt) {
                     "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
                     "sudo cp " + usbListenerDir +
                         "/gpii-usb-user-listener.desktop /usr/share/applications/",
-                    "sudo mkdir -p /var/lib/gpii"
+                    "sudo mkdir -p /var/lib/gpii",
                     "sudo touch /var/lib/gpii/log.txt",
                     "sudo chmod a+rw /var/lib/gpii/log.txt"
                 ].join("&&")
