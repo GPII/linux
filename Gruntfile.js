@@ -12,16 +12,16 @@ https://github.com/gpii/universal/LICENSE.txt
 
 "use strict";
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-gpii");
-  
+
     var usbListenerDir = "./usbDriveListener";
-    
-    function nodeGypShell (cmd, cwd) {
+
+    function nodeGypShell(cmd, cwd) {
         return {
             options: {
                 execOptions: {
