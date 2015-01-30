@@ -83,6 +83,7 @@ module.exports = function(grunt) {
         grunt.task.run("shell:compileGSettings");
         grunt.task.run("shell:compileAlsaBridge");
         grunt.task.run("shell:compileXrandrBridge");
+        grunt.task.run("shell:compileProcesses");
         grunt.task.run("shell:installUsbLib");
     });
 
@@ -90,6 +91,7 @@ module.exports = function(grunt) {
         grunt.task.run("shell:cleanGSettings");
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
+        grunt.task.run("shell:cleanProcesses");
         grunt.task.run("shell:uninstallUsbLib");
     });
 
