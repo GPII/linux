@@ -67,8 +67,8 @@ module.exports = function (grunt) {
             },
             uninstallUsbLib: {
                 command: [
-                    "sudo rm /usr/bin/gpii-usb-user-listener",
-                    "sudo rm /usr/share/applications/gpii-usb-user-listener.desktop",
+                    "sudo rm -f /usr/bin/gpii-usb-user-listener",
+                    "sudo rm -f /usr/share/applications/gpii-usb-user-listener.desktop",
                     "sudo rm -f -r /var/lib/gpii"
                 ].join("&&")
             },
