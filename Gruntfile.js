@@ -12,16 +12,16 @@ https://github.com/gpii/universal/LICENSE.txt
 
 "use strict";
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-gpii");
-  
+
     var usbListenerDir = "./usbDriveListener";
-    
-    function nodeGypShell (cmd, cwd) {
+
+    function nodeGypShell(cmd, cwd) {
         return {
             options: {
                 execOptions: {
@@ -69,8 +69,8 @@ module.exports = function(grunt) {
             },
             uninstallUsbLib: {
                 command: [
-                    "sudo rm /usr/bin/gpii-usb-user-listener",
-                    "sudo rm /usr/share/applications/gpii-usb-user-listener.desktop",
+                    "sudo rm -f /usr/bin/gpii-usb-user-listener",
+                    "sudo rm -f /usr/share/applications/gpii-usb-user-listener.desktop",
                     "sudo rm -f -r /var/lib/gpii"
                 ].join("&&")
             },
