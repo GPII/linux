@@ -71,9 +71,6 @@ module.exports = function (grunt) {
                     "sudo rm -f /usr/share/applications/gpii-usb-user-listener.desktop",
                     "sudo rm -f -r /var/lib/gpii"
                 ].join("&&")
-            },
-            startGpii: {
-                command: "node gpii.js"
             }
         }
     });
@@ -91,10 +88,6 @@ module.exports = function (grunt) {
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
         grunt.task.run("shell:uninstallUsbLib");
-    });
-
-    grunt.registerTask("start", "Start the GPII", function () {
-        grunt.task.run("shell:startGpii");
     });
 
     grunt.registerTask("install", "Install system level GPII Components", function () {

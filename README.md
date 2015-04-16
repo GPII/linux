@@ -40,7 +40,7 @@ To clean the plugin binaries use
 
 You can start the GPII local server on port 8080 using:
 
-    grunt start
+    node gpii.js
 
 To install and uninstall the listener components use the following. Note that
 this may prompt you for sudo access.
