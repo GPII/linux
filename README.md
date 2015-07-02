@@ -24,6 +24,7 @@ have grunt installed yet you can do so with:
 
 To fetch our core universal dependencies and build the linux specific plugins
 run
+
     npm install
     grunt build
     
