@@ -19,7 +19,13 @@ var fluid = require("universal");
 
 fluid.module.register("gpii-linux", __dirname, require);
 
+// Settings Handlers
+//
 fluid.require("./gpii/node_modules/gsettingsBridge", require);
 fluid.require("./gpii/node_modules/orca", require);
 fluid.require("./gpii/node_modules/alsa", require);
 fluid.require("./gpii/node_modules/xrandr", require);
+
+// Device Reporters
+//
+fluid.require("./gpii/node_modules/packagekit", require);
