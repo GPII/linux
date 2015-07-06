@@ -17,7 +17,8 @@
 
 
 var fluid = require("universal"),
-    gpii = fluid.registerNamespace("gpii");
+    gpii = fluid.registerNamespace("gpii"),
+    kettle = fluid.registerNamespace("kettle");
 
 require("./index.js");
 

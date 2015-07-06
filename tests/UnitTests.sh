@@ -31,7 +31,14 @@ node orcaSettingsHandlerTests.js
 popd
 
 pushd .
-cd ../gpii/node_modules/processReporter/test
+cd ../gpii/node_modules/packagekit/test/
+node .//all-tests.js
+cd ../nodepackagekit
+node nodepackagekit_test.js
+popd
+
+pushd .
+cd ../gpii/node_modules/processReporter/test/
 node processesBridge_tests.js
 cd ../nodeprocesses
 node nodeprocesses_test.js
