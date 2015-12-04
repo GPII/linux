@@ -21,11 +21,11 @@ fluid.module.register("gpii-linux", __dirname, require);
 
 // Settings Handlers
 //
-fluid.require("./gpii/node_modules/gsettingsBridge", require);
-fluid.require("./gpii/node_modules/orca", require);
-fluid.require("./gpii/node_modules/alsa", require);
-fluid.require("./gpii/node_modules/xrandr", require);
+require("./gpii/node_modules/gsettingsBridge");
+require("./gpii/node_modules/orca");
+require("./gpii/node_modules/alsa");
+require("./gpii/node_modules/xrandr");
 
 // Device Reporters
 //
-fluid.require("./gpii/node_modules/packagekit", require);
+require("./gpii/node_modules/packagekit");
