@@ -11,9 +11,10 @@
         "grunt-shell": "0.6.4",
         "grunt-contrib-jshint": "~0.9.0",
         "grunt-jsonlint": "1.0.4",
-        "grunt-gpii": "git://github.com/GPII/grunt-gpii.git#ec8412064e107febb120f0b7437d403453b40d2d"
+        "grunt-gpii": "git://github.com/GPII/grunt-gpii.git#ec8412064e107febb120f0b7437d403453b40d2d",
+        "nan": "^2.1.0"
     },
-        "license" : "BSD-3-Clause",
+    "license" : "BSD-3-Clause",
     "keywords": [
         "gpii",
         "accessibility",
