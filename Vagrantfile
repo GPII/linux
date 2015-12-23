@@ -70,13 +70,4 @@ Vagrant.configure(2) do |config|
     inline: "/usr/local/bin/edit-hosts.sh",
     run: "always"
 
-  # http://serverfault.com/a/725051
-  #config.vm.provision "shell",
-  #  inline: "sudo systemctl restart #{app_name}.service",
-  #  run: "always"
-
-  #config.vm.provision "shell",
-  #  inline: "sudo systemctl restart systemd-journal-gatewayd.service",
-  #  run: "always"
-
 end
