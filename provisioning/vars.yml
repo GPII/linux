@@ -4,6 +4,10 @@
 
 nodejs_app_name: gpii-linux-framework
 
+nodejs_app_git_repo: https://github.com/gpii/linux.git
+
+nodejs_app_git_branch: master
+
 # Node.js version required by application (supported versions: 0.10.36*, 0.10.40, 4.1.1)
 nodejs_version: 0.10.40
 

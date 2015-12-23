@@ -76,7 +76,7 @@ By default the VM will use two processor cores and 2GB of RAM. Two environment v
 
 Once the box has been downloaded the provisioning process will ensure that project dependencies have been met and then the ``npm install`` and ``grunt --force build`` commands will be executed. If you reboot the VM the provisioner will not run again. However, you can use ``vagrant provision`` to trigger that process at any time.
 
-To run tests you can use the ``grunt tests`` target which will run unit and acceptance tests in the VM and report the results in your terminal. Or you could use ``grunt unit-tests`` and/or ``grunt acceptance-tests`` separately.
+To run tests you can use the ``grunt tests`` command on your host which will run unit and acceptance tests in the VM. Or you could use ``grunt unit-tests`` and/or ``grunt acceptance-tests`` separately.
 
 You can stop the VM using ``vagrant halt`` or delete it altogether using ``vagrant destroy``.
 
