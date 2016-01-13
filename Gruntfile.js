@@ -60,6 +60,8 @@ module.exports = function (grunt) {
             cleanXrandrBridge: nodeGypShell(gypCleanCmd, "gpii/node_modules/xrandr/nodexrandr"),
             compilePackageKitBridge: nodeGypShell(gypCompileCmd, "gpii/node_modules/packagekit/nodepackagekit"),
             cleanPackageKitBridge: nodeGypShell(gypCleanCmd, "gpii/node_modules/packagekit/nodepackagekit"),
+            compileProcesses: nodeGypShell(gypCompileCmd, "gpii/node_modules/processReporter/nodeprocesses"),
+            cleanProcesses: nodeGypShell(gypCleanCmd, "gpii/node_modules/processReporter/nodeprocesses"),
             installUsbLib: {
                 command: [
                     "sudo cp " + usbListenerDir + "/gpii-usb-user-listener /usr/bin/",
@@ -86,6 +88,7 @@ module.exports = function (grunt) {
         grunt.task.run("shell:compileAlsaBridge");
         grunt.task.run("shell:compileXrandrBridge");
         grunt.task.run("shell:compilePackageKitBridge");
+        grunt.task.run("shell:compileProcesses");
         grunt.task.run("shell:installUsbLib");
     });
 
@@ -94,6 +97,7 @@ module.exports = function (grunt) {
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
         grunt.task.run("shell:cleanPackageKitBridge");
+        grunt.task.run("shell:cleanProcesses");
         grunt.task.run("shell:uninstallUsbLib");
     });
 
