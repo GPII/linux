@@ -9,7 +9,7 @@ nodejs_app_git_repo: https://github.com/gpii/linux.git
 nodejs_app_git_branch: master
 
 # Node.js version required by application (supported versions: 0.10.36*, 0.10.40, 4.1.1)
-nodejs_version: 0.10.40
+nodejs_version: 0.10.42
 
 # If a specific npm version is needed, specify it here
 #nodejs_npm_version: 1.4.28
