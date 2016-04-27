@@ -22,6 +22,16 @@ module.exports = function (grunt) {
     var usbListenerDir = "./usbDriveListener";
     var gypCompileCmd = "node-gyp configure build";
     var gypCleanCmd = "node-gyp clean";
+    var pkgdata = require('./package.json');
+
+    var currentArch = (function() {
+        if (process.arch == 'ia32')
+            return 'i386';
+        else if (process.arch == 'x64')
+            return "x86_64";
+        else
+            return "noarch";
+    })();
 
     function nodeGypShell(cmd, cwd) {
         return {
@@ -43,6 +53,9 @@ module.exports = function (grunt) {
         jsonlint: {
             src: ["gpii/**/*.json"]
         },
+        appFileName: "gpii-linux",
+        buildDir: "build",
+        pkgdata: pkgdata,
         shell: {
             options: {
                 stdout: true,
@@ -85,6 +98,38 @@ module.exports = function (grunt) {
             runUnitTests: {
                 command: "vagrant ssh -c 'cd /home/vagrant/sync/tests/; DISPLAY=:0 ./UnitTests.sh'"
             }
+        },
+        easy_rpm: {
+            options: {
+                release: 1,
+                summary: pkgdata.description,
+                rpmDestination: "bin",
+                tempDir: "bin/tmp",
+                keepTemp: true,
+                license: pkgdata.licenses[0].type,
+                url: pkgdata.homepage,
+                buildArch: currentArch,
+                requires: [
+                    "nodejs >= 0.10.42",
+                    "python-httplib2"
+                ]
+            },
+            release: {
+                files: [
+                    {src: "gpii.js", dest: "/opt/gpii-linux"},
+                    {src: "index.js", dest: "/opt/gpii-linux"},
+                    {src: "package.json", dest: "/opt/gpii-linux"},
+                    {src: "gpii/**/*", dest: "/opt/gpii-linux"},
+                    {src: "../node_modules/**/*", dest: "/opt/gpii-linux/node_modules"},
+                    {src: "gpii-linux-autostart.desktop", dest: "/etc/xdg/autostart", cwd: 'build/resources'},
+                    {src: "gpii-linux-start", dest: "/usr/bin", cwd: 'build/resources'},
+                    {src: "gpii-usb-user-listener", dest: "/usr/bin", mode: "755", cwd: 'usbDriveListener'},
+                    {src: "gpii-usb-user-listener.desktop", dest: "/usr/share/applications", cwd: 'usbDriveListener'}
+                ],
+                excludeFiles: [
+                    "../node_modules/**/examples/switch-bench.js" //avoid strange dependency
+                ]
+            },
         }
     });
 
@@ -132,4 +177,9 @@ module.exports = function (grunt) {
         grunt.task.run("shell:runUnitTests");
         grunt.task.run("shell:runAcceptanceTests");
     });
+    grunt.registerTask("buildrpm", "Build GPII Linux and RPM package", function () {
+        grunt.task.run("build");
+        grunt.task.run("easy_rpm");
+    });
+    grunt.loadNpmTasks("grunt-easy-rpm");
 };
