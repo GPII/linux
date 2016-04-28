@@ -56,9 +56,7 @@ to polute your environment.
 
 To build a RPM package run the following command at the root of the git repository:
 
-    docker run --rm -it \
-    -v $(pwd):/sync fedora \
-    /bin/bash -c "dnf install -y nodejs-grunt-cli; cp -r /sync /packages; cd /packages; grunt buildrpm; cp -r /packages/bin /sync"
+    grunt buildRpmDocker
 
 you will get the rpm package and the source files of the package in the ``bin``
 directory.
