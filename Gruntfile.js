@@ -92,6 +92,9 @@ module.exports = function (grunt) {
                     "sudo rm -f -r /var/lib/gpii"
                 ].join("&&")
             },
+            prepareRpmEnv: {
+                command: "dnf install -y nodejs-grunt-cli npm alsa-lib-devel json-glib-devel PackageKit-glib-devel libXrandr-devel libgnome-keyring-devel sudo @development-tools rpmdevtools"
+            },
             runAcceptanceTests: {
                 command: "vagrant ssh -c 'DISPLAY=:0 node /home/vagrant/sync/tests/AcceptanceTests.js'"
             },
@@ -179,6 +182,7 @@ module.exports = function (grunt) {
         grunt.task.run("shell:runAcceptanceTests");
     });
     grunt.registerTask("buildrpm", "Build GPII Linux and RPM package", function () {
+        grunt.task.run("shell:prepareRpmEnv");
         grunt.task.run("build");
         grunt.task.run("easy_rpm");
     });
