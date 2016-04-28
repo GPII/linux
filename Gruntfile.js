@@ -126,6 +126,7 @@ module.exports = function (grunt) {
                     {src: "../node_modules/**/*", dest: "/opt/gpii-linux/node_modules"},
                     {src: "gpii-linux-autostart.desktop", dest: "/etc/xdg/autostart", cwd: 'build/resources'},
                     {src: "gpii-linux-start", dest: "/usr/bin", cwd: 'build/resources'},
+                    {src: "/var/lib/gpii/log.txt", dest: "/", mode: 666},
                     {src: "gpii-usb-user-listener", dest: "/usr/bin", mode: "755", cwd: 'usbDriveListener'},
                     {src: "gpii-usb-user-listener.desktop", dest: "/usr/share/applications", cwd: 'usbDriveListener'}
                 ],
