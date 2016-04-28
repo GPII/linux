@@ -1,6 +1,6 @@
 # Use with Systemd > 219
 [Unit]
-Description=omponents of the GPII personalization infrastructure for use on Linux
+Description=Components of the GPII personalization infrastructure for use on Linux
 Documentation=http://gpii.net
 
 [Service]
