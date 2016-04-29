@@ -56,7 +56,7 @@ to polute your environment.
 
 To build a RPM package run the following command at the root of the git repository:
 
-    grunt buildRpmDocker
+    grunt build-rpm-docker
 
 you will get the rpm package and the source files of the package in the ``bin``
 directory.
