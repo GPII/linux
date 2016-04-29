@@ -1,0 +1,4 @@
+#!/bin/sh
+systemctl --user import-environment
+cd /opt/gpii-linux
+node gpii.js
