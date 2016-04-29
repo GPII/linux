@@ -99,7 +99,7 @@ module.exports = function (grunt) {
                 command: "dnf install -y nodejs-grunt-cli npm alsa-lib-devel json-glib-devel PackageKit-glib-devel libXrandr-devel libgnome-keyring-devel sudo @development-tools rpmdevtools"
             },
             buildRpmDocker: {
-                command: "docker run --rm -i -v $(pwd):/sync fedora /bin/bash -c 'dnf install -y nodejs-grunt-cli; cp -r /sync /packages; cd /packages; grunt buildrpm; cp -r /packages/bin /sync'"
+                command: "docker run --rm -i -v $(pwd):/sync fedora /bin/bash -c 'dnf install -y nodejs-grunt-cli; cp -r /sync /packages; cd /packages; grunt build-rpm; cp -r /packages/bin /sync'"
             },
             runAcceptanceTests: {
                 command: "vagrant ssh -c 'DISPLAY=:0 node /home/vagrant/sync/tests/AcceptanceTests.js'"
@@ -180,10 +180,10 @@ module.exports = function (grunt) {
         grunt.task.run("shell:runUnitTests");
         grunt.task.run("shell:runAcceptanceTests");
     });
-    grunt.registerTask("buildRpmDocker", "Build Linux RPM package using a Docker container", function () {
+    grunt.registerTask("build-rpm-docker", "Build Linux RPM package using a Docker container", function () {
         grunt.task.run("shell:buildRpmDocker");
     });
-    grunt.registerTask("buildrpm", "Build GPII Linux and RPM package", function () {
+    grunt.registerTask("build-rpm", "Build GPII Linux and RPM package", function () {
         grunt.task.run("shell:prepareRpmEnv");
         grunt.task.run("build");
         grunt.task.run("easy_rpm");
