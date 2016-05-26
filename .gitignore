@@ -1,4 +1,4 @@
-/.vagrant/
+.vagrant
 gpii/node_modules/alsa/nodealsa/build/
 gpii/node_modules/gsettingsBridge/nodegsettings/build/
 gpii/node_modules/packagekit/nodepackagekit/build/

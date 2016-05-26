@@ -23,7 +23,7 @@ module.exports = function (grunt) {
     var usbListenerDir = "./usbDriveListener";
     var gypCompileCmd = "node-gyp configure build";
     var gypCleanCmd = "node-gyp clean";
-    
+
     function nodeGypShell(cmd, cwd) {
         return {
             options: {
@@ -50,7 +50,12 @@ module.exports = function (grunt) {
             options: {
                 stdout: true,
                 stderr: true,
-                failOnError: true
+                failOnError: true,
+                // A large maxBuffer value is required for the 'runAcceptanceTests' task otherwise
+                // a 'stdout maxBuffer exceeded' warning is generated.
+                execOptions: {
+                    maxBuffer: 1000 * 1024
+                }
             },
             compileGSettings: nodeGypShell(gypCompileCmd, "gpii/node_modules/gsettingsBridge/nodegsettings"),
             cleanGSettings: nodeGypShell(gypCleanCmd, "gpii/node_modules/gsettingsBridge/nodegsettings"),
@@ -76,6 +81,12 @@ module.exports = function (grunt) {
                     "sudo rm -f /usr/share/applications/gpii-usb-user-listener.desktop",
                     "sudo rm -f -r /var/lib/gpii"
                 ].join("&&")
+            },
+            runAcceptanceTests: {
+                command: "vagrant ssh -c 'DISPLAY=:0 node /home/vagrant/sync/tests/AcceptanceTests.js'"
+            },
+            runUnitTests: {
+                command: "vagrant ssh -c 'cd /home/vagrant/sync/tests/; DISPLAY=:0 ./UnitTests.sh'"
             }
         }
     });
@@ -103,5 +114,18 @@ module.exports = function (grunt) {
 
     grunt.registerTask("uninstall", "Uninstall system level GPII Components", function () {
         grunt.task.run("shell:uninstallUsbLib");
+    });
+
+    grunt.registerTask("unit-tests", "Run GPII unit tests", function () {
+        grunt.task.run("shell:runUnitTests");
+    });
+
+    grunt.registerTask("acceptance-tests", "Run GPII acceptance tests", function () {
+        grunt.task.run("shell:runAcceptanceTests");
+    });
+
+    grunt.registerTask("tests", "Run GPII unit and acceptance tests", function () {
+        grunt.task.run("shell:runUnitTests");
+        grunt.task.run("shell:runAcceptanceTests");
     });
 };
