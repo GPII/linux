@@ -8,8 +8,8 @@ nodejs_app_git_repo: https://github.com/gpii/linux.git
 
 nodejs_app_git_branch: master
 
-# Node.js version required by application (supported versions: 0.10.36*, 0.10.40, 4.1.1)
-nodejs_version: 0.10.42
+# Currently Node.js LTS (4.x or "Argon") is required by the GPII
+nodejs_branch: lts
 
 # If a specific npm version is needed, specify it here
 #nodejs_npm_version: 1.4.28
@@ -33,7 +33,7 @@ nodejs_app_rpm_packages:
   - http-parser
   - http-parser-devel
   - libstdc++-devel
-  - libuv 
+  - libuv
   - libuv-devel
 
 nodejs_app_npm_packages:
@@ -48,4 +48,3 @@ nodejs_app_start_script: gpii.js
 nodejs_app_install_dir: /home/vagrant/sync
 
 nodejs_app_git_clone: false
-
