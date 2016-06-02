@@ -44,7 +44,7 @@ module.exports = function (grunt) {
             }
         },
         jsonlint: {
-            src: ["gpii/**/*.json", "tests/**/*.json"]
+            src: ["gpii/**/*.json"]
         },
         shell: {
             options: {
@@ -95,20 +95,28 @@ module.exports = function (grunt) {
 
     grunt.registerTask("build", "Build the entire GPII", function () {
         grunt.task.run("gpii-universal");
+        grunt.task.run("build-addons");
+        grunt.task.run("shell:installUsbLib");
+    });
+
+    grunt.registerTask("build-addons", "Build the native addons", function () {
         grunt.task.run("shell:compileGSettings");
         grunt.task.run("shell:compileAlsaBridge");
         grunt.task.run("shell:compileXrandrBridge");
         grunt.task.run("shell:compilePackageKitBridge");
         grunt.task.run("shell:compileProcesses");
-        grunt.task.run("shell:installUsbLib");
     });
 
-    grunt.registerTask("clean", "Clean the GPII binaries and uninstall", function () {
+    grunt.registerTask("clean-addons", "Clean the native addons", function () {
         grunt.task.run("shell:cleanGSettings");
         grunt.task.run("shell:cleanAlsaBridge");
         grunt.task.run("shell:cleanXrandrBridge");
         grunt.task.run("shell:cleanPackageKitBridge");
         grunt.task.run("shell:cleanProcesses");
+    });
+
+    grunt.registerTask("clean", "Clean the GPII binaries and uninstall", function () {
+        grunt.task.run("clean-addons");
         grunt.task.run("shell:uninstallUsbLib");
     });
 
