@@ -49,7 +49,15 @@ this may prompt you for sudo access.
     grunt install
     grunt uninstall
 
-# Setting Up a Virtual Machine
+# Setting Up a Physical or Virtual Machine Without Using Vagrant
+
+The next section describes an automated deployment approach that involves using Vagrant. If the GPII Linux Framework needs to be set up on a physical or virtual machine without using Vagrant then the ``install.sh`` script in the ``provisioning`` directory can be used. The script will bootstrap the environment to the point from where Ansible roles can be used to set up the Framework. You will need administrative privileges (via sudo) and GNOME 3 set up before using the script:
+```
+cd provisioning
+sudo ./install.sh
+```
+
+# Setting Up a Virtual Machine Using Vagrant
 
 This repository contains content that will allow you to automatically provision a development VM. A [Vagrantfile](http://docs.vagrantup.com/v2/vagrantfile/) is provided that downloads a [Fedora Vagrant box](https://github.com/idi-ops/packer-fedora), starts a VM, and deploys the GPII Framework on it.
 
