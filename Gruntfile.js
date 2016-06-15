@@ -23,7 +23,6 @@ module.exports = function (grunt) {
     var gypCompileCmd = "node-gyp configure build";
     var gypCleanCmd = "node-gyp clean";
     var pkgdata = require('./package.json');
-
     var currentArch = (function() {
         if (process.arch == 'ia32')
             return 'i386';
@@ -193,4 +192,5 @@ module.exports = function (grunt) {
         grunt.task.run("easy_rpm");
     });
     grunt.loadNpmTasks("grunt-easy-rpm");
+    grunt.loadTasks('tasks');
 };
