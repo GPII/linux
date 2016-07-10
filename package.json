@@ -1,18 +1,19 @@
 {
     "name": "gpii-linux",
     "description": "Components of the GPII personalization infrastructure for use on Linux",
-    "version": "1.0.0",
+    "version": "0.3.0",
     "author": "GPII",
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
-    "dependencies": {},
+    "dependencies": {
+        "universal": "git://github.com/amb26/universal.git#1a97958b6a7669c2c9e11a96ebd6f407357a4f81"
+    },
     "devDependencies": {
-        "grunt": "~0.4.5",
-        "grunt-shell": "0.6.4",
-        "grunt-contrib-jshint": "~0.9.0",
+        "grunt": "1.0.1",
+        "fluid-grunt-eslint": "18.1.1",
         "grunt-jsonlint": "1.0.4",
-        "grunt-gpii": "git://github.com/GPII/grunt-gpii.git#ec8412064e107febb120f0b7437d403453b40d2d",
-        "nan": "^2.1.0"
+        "grunt-shell": "1.3.0",
+        "nan": "2.1.0"
     },
     "license" : "BSD-3-Clause",
     "keywords": [
