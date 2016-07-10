@@ -6,7 +6,7 @@
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
     "dependencies": {
-        "universal": "git://github.com/amb26/universal.git#1a97958b6a7669c2c9e11a96ebd6f407357a4f81"
+        "universal": "gpii/universal#98561d07c0b49d4d565be9027adebf36c1d1fe82"
     },
     "devDependencies": {
         "grunt": "1.0.1",
