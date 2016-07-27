@@ -6,7 +6,7 @@
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
     "dependencies": {
-        "universal": "gpii/universal#98561d07c0b49d4d565be9027adebf36c1d1fe82"
+        "universal": "klown/universal#93591d8cc27a29a4885ebb9d5471987b655b41b3"
     },
     "devDependencies": {
         "grunt": "1.0.1",
