@@ -1,7 +1,8 @@
 - src: https://github.com/idi-ops/ansible-facts
   name: facts
 
-- src: https://github.com/idi-ops/ansible-nodejs
+- src: https://github.com/javihernandez/ansible-nodejs
+  version: GPII-1898
   name: nodejs
 
 - src: https://github.com/gpii-ops/ansible-gpii-framework

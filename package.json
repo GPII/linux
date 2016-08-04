@@ -6,14 +6,14 @@
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
     "dependencies": {
-        "universal": "gpii/universal#98561d07c0b49d4d565be9027adebf36c1d1fe82"
+        "universal": "javihernandez/universal#be9dce824ad6cb027e10f4eb9d57e52f6b4847d7"
     },
     "devDependencies": {
         "grunt": "1.0.1",
         "fluid-grunt-eslint": "18.1.1",
         "grunt-jsonlint": "1.0.4",
         "grunt-shell": "1.3.0",
-        "nan": "2.1.0"
+        "nan": "2.4.0"
     },
     "license" : "BSD-3-Clause",
     "keywords": [
@@ -29,6 +29,6 @@
     "repository": "git://github.com/GPII/linux.git",
     "main": "./gpii/index.js",
     "engines": {
-        "node": ">=4.2.1"
+        "node": ">=6.3.1"
     }
 }
