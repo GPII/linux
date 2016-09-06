@@ -43,7 +43,7 @@ popd
 
 pushd .
 cd ../gpii/node_modules/processReporter/test/
-node processesBridge_tests.js
+node ./all-tests.js
 cd ../nodeprocesses
 node nodeprocesses_test.js
 popd
