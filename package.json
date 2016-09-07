@@ -6,7 +6,7 @@
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
     "dependencies": {
-        "universal": "javihernandez/universal#be9dce824ad6cb027e10f4eb9d57e52f6b4847d7"
+        "universal": "javihernandez/universal#570143d4822ae1cd8a4b9e1ef27b0e82d84b7fe9"
     },
     "devDependencies": {
         "grunt": "1.0.1",
@@ -29,6 +29,6 @@
     "repository": "git://github.com/GPII/linux.git",
     "main": "./gpii/index.js",
     "engines": {
-        "node": ">=6.3.1"
+        "node": ">=4.2.1"
     }
 }
