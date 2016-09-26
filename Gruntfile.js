@@ -111,7 +111,7 @@ module.exports = function (grunt) {
                 rpmDestination: "bin",
                 tempDir: "bin/tmp",
                 keepTemp: true,
-                license: pkgdata.licenses[0].type,
+                license: pkgdata.license,
                 url: pkgdata.homepage,
                 buildArch: currentArch,
                 requires: [
