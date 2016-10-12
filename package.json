@@ -6,14 +6,14 @@
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
     "dependencies": {
-        "universal": "klown/universal#a83cd1744329a8bfd487c21988f3d98970557ec0"
+        "universal": "klown/universal#8120b2e812edb4cb342e30d538ca342585373cef"
     },
     "devDependencies": {
         "grunt": "1.0.1",
         "fluid-grunt-eslint": "18.1.1",
         "grunt-jsonlint": "1.0.4",
         "grunt-shell": "1.3.0",
-        "nan": "2.1.0"
+        "nan": "2.4.0"
     },
     "license" : "BSD-3-Clause",
     "keywords": [

@@ -9,7 +9,7 @@ nodejs_app_git_repo: https://github.com/gpii/linux.git
 nodejs_app_git_branch: master
 
 # Currently Node.js LTS (4.x or "Argon") is required by the GPII
-nodejs_branch: lts
+nodejs_branch: current
 
 # If a specific npm version is needed, specify it here
 #nodejs_npm_version: 1.4.28
