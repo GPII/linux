@@ -21,15 +21,21 @@ var fluid = require("universal");
 
 fluid.module.register("gpii-linux", __dirname, require);
 
+fluid.contextAware.makeChecks({
+    "gpii.contexts.linux": {
+        value: true
+    }
+});
+
 // Settings Handlers
-//
+
 require("./gpii/node_modules/gsettingsBridge");
 require("./gpii/node_modules/orca");
 require("./gpii/node_modules/alsa");
 require("./gpii/node_modules/xrandr");
 
 // Device Reporters
-//
+
 require("./gpii/node_modules/packagekit");
 
 // Process reporters
