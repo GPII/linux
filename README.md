@@ -51,10 +51,10 @@ this may prompt you for sudo access.
 
 # Setting Up a Physical or Virtual Machine Without Using Vagrant
 
-The next section describes an automated deployment approach that involves using Vagrant. If the GPII Linux Framework needs to be set up on a physical or virtual machine without using Vagrant then the ``install.sh`` script in the ``provisioning`` directory can be used. The script will bootstrap the environment to the point where Ansible roles can be used to set up the Framework. You will need administrative privileges (via sudo) and GNOME 3 set up on Fedora 23 or 24 before using the script:
+The next section describes an automated deployment approach that involves using Vagrant. If the GPII Linux Framework needs to be set up on a physical or virtual machine without using Vagrant then the ``install.sh`` script in the ``provisioning`` directory can be used. The script will bootstrap the environment to the point where Ansible roles can be used to set up the Framework. You will need administrative privileges (via sudo) and GNOME 3 set up on Fedora 24 before using the script:
 ```
 cd provisioning
-sudo GPII_FRAMEWORK_DIR=/opt/gpii-linux-framework ./install.sh
+sudo GPII_FRAMEWORK_DIR=/opt/gpii-linux-framework sh install.sh
 ```
 The ``GPII_FRAMEWORK_DIR`` environment variable should be used to point to the file system location where this Git working directory exists.
 
