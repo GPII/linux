@@ -6,7 +6,7 @@
     "bugs": "http://issues.gpii.net/browse/GPII",
     "homepage": "http://gpii.net/",
     "dependencies": {
-        "universal": "kaspermarkus/universal#f39112bc399c32461010f20d203607927d9e4384"
+        "universal": "kaspermarkus/universal#GPII-1230"
     },
     "devDependencies": {
         "grunt": "1.0.1",
