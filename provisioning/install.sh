@@ -5,7 +5,7 @@
 
 set -e
 
-dnf -y install ansible python-dnf
+dnf -y install ansible coreutils python-dnf
 
 # Configure Ansible for local, non-SSH use only.
 sed -i 's/^#transport.*/transport = local/g' /etc/ansible/ansible.cfg
@@ -33,10 +33,19 @@ ansible-galaxy install -fr requirements.yml
 # process. This information is required to run provisioning commands as the user and ensure the
 # account exists before attempting to do this. The GPII_FRAMEWORK_DIR environment variable is used
 # to figure out which directory commands should be run in.
+
+current_user_name=$(logname)
+current_group_name=$(id -ng $(logname))
+current_user_shell=$(getent passwd $(logname) | cut -d: -f7)
+current_home_dir=$(getent passwd $(logname) | cut -d: -f6)
+
 ansible-playbook playbook.yml --extra-vars \
-"nodejs_app_username=$(logname) \
-nodejs_app_groupname=$(id -ng $(logname)) \
-nodejs_app_user_shell=$(getent passwd $(logname) | cut -d: -f7) \
-nodejs_app_home_dir=$(getent passwd $(logname) | cut -d: -f6) \
-nodejs_app_install_dir=$GPII_FRAMEWORK_DIR" \
+"nodejs_app_username=$current_user_name \
+nodejs_app_groupname=$current_group_name \
+nodejs_app_user_shell=$current_user_shell \
+nodejs_app_home_dir=$current_home_dir \
+nodejs_app_install_dir=$GPII_FRAMEWORK_DIR \
+gpii_framework_username=$current_user_name \
+gpii_framework_groupname=$current_group_name \
+gpii_framework_user_home_dir=$current_home_dir" \
 --tags="install,configure"
