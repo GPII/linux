@@ -49,7 +49,16 @@ this may prompt you for sudo access.
     grunt install
     grunt uninstall
 
-# Setting Up a Virtual Machine
+# Setting Up a Physical or Virtual Machine Without Using Vagrant
+
+The next section describes an automated deployment approach that involves using Vagrant. If the GPII Linux Framework needs to be set up on a physical or virtual machine without using Vagrant then the ``install.sh`` script in the ``provisioning`` directory can be used. The script will bootstrap the environment to the point where Ansible roles can be used to set up the Framework. You will need administrative privileges (via sudo) and GNOME 3 set up on Fedora 24 before using the script:
+```
+cd provisioning
+sudo GPII_FRAMEWORK_DIR=/opt/gpii-linux-framework sh install.sh
+```
+The ``GPII_FRAMEWORK_DIR`` environment variable should be used to point to the file system location where this Git working directory exists.
+
+# Setting Up a Virtual Machine Using Vagrant
 
 This repository contains content that will allow you to automatically provision a development VM. A [Vagrantfile](http://docs.vagrantup.com/v2/vagrantfile/) is provided that downloads a [Fedora Vagrant box](https://github.com/idi-ops/packer-fedora), starts a VM, and deploys the GPII Framework on it.
 
@@ -64,7 +73,7 @@ The ``provisioning`` directory contains these files:
 Please ensure that the [QI Development Environments software requirements](https://github.com/GPII/qi-development-environments/blob/master/README.md#requirements) have been met. You will additionally need the following on your host operating system:
 
 * [grunt-cli](https://github.com/gruntjs/grunt-cli)
-* At least 2GB of available storage space
+* At least 2 GB of available storage space
 
 ## Getting Started
 
@@ -72,7 +81,7 @@ In order to create a new VM you will need to issue the following command:
 
     vagrant up
 
-By default the VM will use two processor cores and 2GB of RAM. Two environment variables can be passed to the ``vagrant up`` command to allocate more cores (``VM_CPUS=2``) and RAM (``VM_RAM=2048``). If this is your first time setting up this VM then the 2GB Fedora Vagrant box will be downloaded.
+By default the VM will use two processor cores and 2GB of RAM. Two environment variables can be passed to the ``vagrant up`` command to allocate more cores (``VM_CPUS=2``) and RAM (``VM_RAM=2048``). If this is your first time setting up this VM then the 2 GB Fedora Vagrant box will be downloaded.
 
 Once the box has been downloaded the provisioning process will ensure that project dependencies have been met and then the ``npm install`` and ``grunt --force build`` commands will be executed. If you reboot the VM the provisioner will not run again. However, you can use ``vagrant provision`` to trigger that process at any time.
 
