@@ -17,33 +17,15 @@ declare -i error_code
 
 trap 'error_code=$?' ERR EXIT
 
+# TODO: Convert this to a javascript-only approach so that we can test code coverage.
 pushd .
-cd ../gpii/node_modules/alsa/test
-node alsaSettingsHandlerTests.js
-popd
-
-pushd .
-cd ../gpii/node_modules/gsettingsBridge/tests
+cd gpii/node_modules/gsettingsBridge/tests
+# TODO: See if we can make this into a javascript-only approach
 ./runUnitTests.sh
+# TODO: Produces no output when run on its own from the repo root. Investigate.
 cd ../nodegsettings
 node .//nodegsettings_tests.js
 popd
-
-pushd .
-cd ../gpii/node_modules/orca/test
-node orcaSettingsHandlerTests.js
-popd
-
-pushd .
-cd ../gpii/node_modules/packagekit/test/
-node .//all-tests.js
-cd ../nodepackagekit
-node nodepackagekit_test.js
-popd
-
-# These XRANDR tests crash out on my system (AMB - Fedora 19 64-bit in VMWare Workstation 10.0.1 on Windows 7 64-bit) 
-node ../gpii/node_modules/xrandr/nodexrandr/nodexrandr_tests.js
-node ../gpii/node_modules/xrandr/test/xrandrSettingsHandlerTests.js
 
 if [ -n "$error_code" ]; then
   exit 1

@@ -1,0 +1,14 @@
+# A common istanbul configuration file.  Avoids generating reports, as we are collecting data from various runs, and
+# will do that as a "posttest" step.  You must explicitly generate a report and summary, see the package.json for an
+# example command.
+instrumentation:
+  root: .
+  include-pid: true
+  default-excludes: false
+  excludes: ["tests/**", "coverage/**", "instrumented/**", "node_modules/**"]
+  complete-copy: true
+reporting:
+  dir: ./coverage
+  print: none
+  reports:
+    - none

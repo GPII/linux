@@ -1,34 +1,49 @@
 {
-    "name": "gpii-linux",
-    "description": "Components of the GPII personalization infrastructure for use on Linux",
-    "version": "0.3.0",
-    "author": "GPII",
-    "bugs": "http://issues.gpii.net/browse/GPII",
-    "homepage": "http://gpii.net/",
-    "dependencies": {
-        "universal": "GPII/universal#1a3434d970cb484956eb18310683bdfe473123d6"
-    },
-    "devDependencies": {
-        "grunt": "1.0.1",
-        "fluid-grunt-eslint": "18.1.1",
-        "grunt-jsonlint": "1.0.4",
-        "grunt-shell": "1.3.0",
-        "nan": "2.4.0"
-    },
-    "license" : "BSD-3-Clause",
-    "keywords": [
-        "gpii",
-        "accessibility",
-        "settings",
-        "fluid",
-        "IoC",
-        "Inversion of Control",
-        "configuration",
-        "evented"
-    ],
-    "repository": "git://github.com/GPII/linux.git",
-    "main": "./gpii/index.js",
-    "engines": {
-        "node": ">=4.2.1"
-    }
+  "name": "gpii-linux",
+  "description": "Components of the GPII personalization infrastructure for use on Linux",
+  "version": "0.3.0",
+  "author": "GPII",
+  "bugs": "http://issues.gpii.net/browse/GPII",
+  "homepage": "http://gpii.net/",
+  "dependencies": {
+    "universal": "GPII/universal#1a3434d970cb484956eb18310683bdfe473123d6"
+  },
+  "devDependencies": {
+    "fluid-grunt-eslint": "18.1.1",
+    "grunt": "1.0.1",
+    "grunt-jsonlint": "1.0.4",
+    "grunt-shell": "1.3.0",
+    "istanbul": "0.4.5",
+    "nan": "2.4.0",
+    "rimraf": "2.6.1"
+  },
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "gpii",
+    "accessibility",
+    "settings",
+    "fluid",
+    "IoC",
+    "Inversion of Control",
+    "configuration",
+    "evented"
+  ],
+  "repository": "git://github.com/GPII/linux.git",
+  "main": "./gpii/index.js",
+  "engines": {
+    "node": ">=4.2.1"
+  },
+  "scripts": {
+    "pretest": "node node_modules/rimraf/bin.js coverage/* reports/*",
+    "test": "npm run test:unit && npm run test:acceptance",
+    "test:unit": "npm run test:unit:pretest && npm run test:unit:run && npm run test:unit:posttest",
+    "test:unit:pretest": "/usr/bin/bash ./gpii/node_modules/gsettingsBridge/tests/scripts/pretest.sh",
+    "test:unit:run": "node node_modules/istanbul/lib/cli.js cover tests/UnitTests.js --include-pid",
+    "test:unit:posttest": "/usr/bin/bash ./gpii/node_modules/gsettingsBridge/tests/scripts/posttest.sh",
+    "test:acceptance": "node node_modules/istanbul/lib/cli.js cover tests/AcceptanceTests.js --include-pid",
+    "test:vagrant": "vagrant ssh -c 'cd /home/vagrant; DISPLAY=:0 npm test'",
+    "test:vagrantUnit": "vagrant ssh -c 'cd /home/vagrant; DISPLAY=:0 npm run test:unit'",
+    "test:vagrantAcceptance": "vagrant ssh -c 'cd /home/vagrant; DISPLAY=:0 npm test:acceptance'",
+    "posttest": "node node_modules/istanbul/lib/cli.js report lcov text-summary"
+  }
 }
