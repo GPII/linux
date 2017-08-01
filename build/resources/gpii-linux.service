@@ -1,0 +1,14 @@
+# Use with Systemd > 219
+[Unit]
+Description=Components of the GPII personalization infrastructure for use on Linux
+Documentation=http://gpii.net
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/gpii-linux-start
+WorkingDirectory=/opt/gpii-linux
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+

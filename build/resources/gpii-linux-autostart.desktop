@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=GPII Linux
+Exec=/usr/bin/gpii-linux-start
+OnlyShowIn=GNOME;

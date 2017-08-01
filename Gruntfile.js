@@ -22,6 +22,15 @@ module.exports = function (grunt) {
     var usbListenerDir = "./usbDriveListener";
     var gypCompileCmd = "node-gyp configure build";
     var gypCleanCmd = "node-gyp clean";
+    var pkgdata = require('./package.json');
+    var currentArch = (function() {
+        if (process.arch == 'ia32')
+            return 'i386';
+        else if (process.arch == 'x64')
+            return "x86_64";
+        else
+            return "noarch";
+    })();
 
     function nodeGypShell(cmd, cwd) {
         return {
@@ -43,6 +52,9 @@ module.exports = function (grunt) {
         jsonlint: {
             src: ["gpii/**/*.json"]
         },
+        appFileName: "gpii-linux",
+        buildDir: "build",
+        pkgdata: pkgdata,
         shell: {
             options: {
                 stdout: true,
@@ -79,12 +91,51 @@ module.exports = function (grunt) {
                     "sudo rm -f -r /var/lib/gpii"
                 ].join("&&")
             },
+            prepareRpmEnv: {
+                command: "dnf install -y nodejs-grunt-cli npm alsa-lib-devel json-glib-devel PackageKit-glib-devel libXrandr-devel libgnome-keyring-devel sudo @development-tools rpmdevtools"
+            },
+            buildRpmDocker: {
+                command: "docker run --rm -i -v $(pwd):/sync fedora /bin/bash -c 'dnf install -y nodejs-grunt-cli; cp -r /sync /packages; cd /packages; grunt build-rpm; cp -r /packages/bin /sync'"
+            },
             runAcceptanceTests: {
                 command: "vagrant ssh -c 'DISPLAY=:0 node /home/vagrant/sync/tests/AcceptanceTests.js'"
             },
             runUnitTests: {
                 command: "vagrant ssh -c 'cd /home/vagrant/sync/tests/; DISPLAY=:0 ./UnitTests.sh'"
             }
+        },
+        easy_rpm: {
+            options: {
+                release: 1,
+                summary: pkgdata.description,
+                rpmDestination: "bin",
+                tempDir: "bin/tmp",
+                keepTemp: true,
+                license: pkgdata.license,
+                url: pkgdata.homepage,
+                buildArch: currentArch,
+                requires: [
+                    "nodejs >= 0.10.42",
+                    "python-httplib2"
+                ]
+            },
+            release: {
+                files: [
+                    {src: "gpii.js", dest: "/opt/gpii-linux"},
+                    {src: "index.js", dest: "/opt/gpii-linux"},
+                    {src: "package.json", dest: "/opt/gpii-linux"},
+                    {src: "gpii/**/*", dest: "/opt/gpii-linux"},
+                    {src: "../node_modules/**/*", dest: "/opt/gpii-linux/node_modules"},
+                    {src: "gpii-linux-autostart.desktop", dest: "/etc/xdg/autostart", cwd: 'build/resources'},
+                    {src: "gpii-linux-start", dest: "/usr/bin", cwd: 'build/resources'},
+                    {src: "/var/lib/gpii/log.txt", dest: "/", mode: 666},
+                    {src: "gpii-usb-user-listener", dest: "/usr/bin", mode: "755", cwd: 'usbDriveListener'},
+                    {src: "gpii-usb-user-listener.desktop", dest: "/usr/share/applications", cwd: 'usbDriveListener'}
+                ],
+                excludeFiles: [
+                    "../node_modules/**/examples/switch-bench.js" //avoid strange dependency
+                ]
+            },
         }
     });
 
@@ -132,4 +183,14 @@ module.exports = function (grunt) {
         grunt.task.run("shell:runUnitTests");
         grunt.task.run("shell:runAcceptanceTests");
     });
+    grunt.registerTask("build-rpm-docker", "Build Linux RPM package using a Docker container", function () {
+        grunt.task.run("shell:buildRpmDocker");
+    });
+    grunt.registerTask("build-rpm", "Build GPII Linux and RPM package", function () {
+        grunt.task.run("shell:prepareRpmEnv");
+        grunt.task.run("build");
+        grunt.task.run("easy_rpm");
+    });
+    grunt.loadNpmTasks("grunt-easy-rpm");
+    grunt.loadTasks('tasks');
 };

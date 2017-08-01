@@ -49,6 +49,18 @@ this may prompt you for sudo access.
     grunt install
     grunt uninstall
 
+## Building a RPM package
+
+We use Docker to build the RPM package in a clean environment, this also avoids
+to polute your environment.
+
+To build a RPM package run the following command at the root of the git repository:
+
+    grunt build-rpm-docker
+
+you will get the rpm package and the source files of the package in the ``bin``
+directory.
+
 # Setting Up a Virtual Machine
 
 This repository contains content that will allow you to automatically provision a development VM. A [Vagrantfile](http://docs.vagrantup.com/v2/vagrantfile/) is provided that downloads a [Fedora Vagrant box](https://github.com/idi-ops/packer-fedora), starts a VM, and deploys the GPII Framework on it.
