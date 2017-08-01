@@ -6,14 +6,14 @@
   "bugs": "http://issues.gpii.net/browse/GPII",
   "homepage": "http://gpii.net/",
   "dependencies": {
-    "universal": "GPII/universal#1a3434d970cb484956eb18310683bdfe473123d6"
+    "universal": "GPII/universal#06d5b9b672feecac88e2cf8e351248fad503a111"
   },
   "devDependencies": {
     "fluid-grunt-eslint": "18.1.1",
     "grunt": "1.0.1",
     "grunt-jsonlint": "1.0.4",
     "grunt-shell": "1.3.0",
-    "istanbul": "0.4.5",
+    "istanbul": "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5",
     "nan": "2.4.0",
     "rimraf": "2.6.1"
   },
@@ -41,9 +41,9 @@
     "test:unit:run": "node node_modules/istanbul/lib/cli.js cover tests/UnitTests.js --include-pid",
     "test:unit:posttest": "/usr/bin/bash ./gpii/node_modules/gsettingsBridge/tests/scripts/posttest.sh",
     "test:acceptance": "node node_modules/istanbul/lib/cli.js cover tests/AcceptanceTests.js --include-pid",
-    "test:vagrant": "vagrant ssh -c 'cd /home/vagrant; DISPLAY=:0 npm test'",
-    "test:vagrantUnit": "vagrant ssh -c 'cd /home/vagrant; DISPLAY=:0 npm run test:unit'",
-    "test:vagrantAcceptance": "vagrant ssh -c 'cd /home/vagrant; DISPLAY=:0 npm test:acceptance'",
+    "test:vagrant": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm test'",
+    "test:vagrantUnit": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm run test:unit'",
+    "test:vagrantAcceptance": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm test:acceptance'",
     "posttest": "node node_modules/istanbul/lib/cli.js report lcov text-summary"
   }
 }
