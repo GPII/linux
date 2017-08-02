@@ -43,7 +43,7 @@
     "test:acceptance": "node node_modules/istanbul/lib/cli.js cover tests/AcceptanceTests.js --include-pid",
     "test:vagrant": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm test'",
     "test:vagrantUnit": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm run test:unit'",
-    "test:vagrantAcceptance": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm test:acceptance'",
+    "test:vagrantAcceptance": "vagrant ssh -c 'cd /home/vagrant/sync; npm install && DISPLAY=:0 npm run test:acceptance'",
     "posttest": "node node_modules/istanbul/lib/cli.js report lcov text-summary"
   }
 }
