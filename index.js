@@ -37,3 +37,4 @@ require("./gpii/node_modules/xrandr");
 // Device Reporters
 
 require("./gpii/node_modules/packagekit");
+require("./gpii/node_modules/platformReporter");
