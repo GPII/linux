@@ -16,7 +16,7 @@ Seventh Framework Programme (FP7/2007-2013) under grant agreement no. 289016.
 
 "use strict";
 
-var fluid = require("universal"),
+var fluid = require("gpii-universal"),
     gpii = fluid.registerNamespace("gpii");
 
 gpii.loadTestingSupport();
@@ -25,7 +25,7 @@ fluid.registerNamespace("gpii.acceptanceTesting.linux");
 
 require("../index.js");
 
-var baseDir = fluid.module.resolvePath("%universal/tests/");
-var linuxFiles = fluid.require("%universal/tests/platform/index-linux.js");
+var baseDir = fluid.module.resolvePath("%gpii-universal/tests/");
+var linuxFiles = fluid.require("%gpii-universal/tests/platform/index-linux.js");
 
 gpii.test.runSuitesWithFiltering(linuxFiles, baseDir, ["gpii.test.acceptance.testCaseHolder"]);
