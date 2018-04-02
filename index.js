@@ -17,7 +17,7 @@
 
 "use strict";
 
-var fluid = require("universal");
+var fluid = require("gpii-universal");
 
 fluid.module.register("gpii-linux", __dirname, require);
 
