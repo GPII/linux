@@ -35,6 +35,7 @@ nodejs_app_rpm_packages:
   - libstdc++-devel
   - libuv
   - libuv-devel
+  - libgtop2-devel
 
 nodejs_app_npm_packages:
   - node-gyp

@@ -41,6 +41,13 @@ cd ../nodepackagekit
 node nodepackagekit_test.js
 popd
 
+pushd .
+cd ../gpii/node_modules/processReporter/test/
+node ./all-tests.js
+cd ../nodeprocesses
+node nodeprocesses_test.js
+popd
+
 # These XRANDR tests crash out on my system (AMB - Fedora 19 64-bit in VMWare Workstation 10.0.1 on Windows 7 64-bit) 
 node ../gpii/node_modules/xrandr/nodexrandr/nodexrandr_tests.js
 node ../gpii/node_modules/xrandr/test/xrandrSettingsHandlerTests.js

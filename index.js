@@ -17,7 +17,7 @@
 
 "use strict";
 
-var fluid = require("universal");
+var fluid = require("gpii-universal");
 
 fluid.module.register("gpii-linux", __dirname, require);
 
@@ -37,3 +37,7 @@ require("./gpii/node_modules/xrandr");
 // Device Reporters
 
 require("./gpii/node_modules/packagekit");
+
+// Process reporters
+//
+require("./gpii/node_modules/processReporter");
