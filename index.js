@@ -37,3 +37,7 @@ require("./gpii/node_modules/xrandr");
 // Device Reporters
 
 require("./gpii/node_modules/packagekit");
+
+// Process reporters
+//
+require("./gpii/node_modules/processReporter");
