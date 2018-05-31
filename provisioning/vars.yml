@@ -8,11 +8,11 @@ nodejs_app_git_repo: https://github.com/gpii/linux.git
 
 nodejs_app_git_branch: master
 
-# Currently Node.js 6.x LTS is required by the GPII
+# Choose Node.js branch (lts or current)
 nodejs_branch: lts
 
 # If a specific npm version is needed, specify it here
-#nodejs_npm_version: 1.4.28
+#nodejs_npm_version: 5.6.0
 
 nodejs_app_rpm_packages:
   - orca
