@@ -70,4 +70,25 @@ Vagrant.configure(2) do |config|
     sudo PYTHONUNBUFFERED=1 ansible-playbook /home/vagrant/sync/provisioning/playbook.yml --tags="install,configure" --inventory="localhost ansible_connection=local,"
   SHELL
 
+  # Using config.vm.hostname to set the hostname on Fedora VMs seems to remove the string
+  # "localhost" from the first line of /etc/hosts. This script reinserts it if it's missing.
+  # https://github.com/mitchellh/vagrant/pull/6203
+  config.vm.provision "shell",
+    inline: "/usr/local/bin/edit-hosts.sh",
+    run: "always"
+
+  # The Vagrant box is configured with packagekit service disabled and masked.
+  # Packagekit is needed by the linux implementation of the DeviceReporter -- re-enable
+  # here.  If the service is running, the inline script below is a no-op.
+  # Note:  unfortunately, the output on the command line is:
+  #    default: Removed /etc/systemd/system/packagekit.service
+  # But, that actually means that the service is up and running.  What it is
+  # saying is that the service has been unlinked from /dev/null, i.e. working.
+  config.vm.provision "shell",
+    run: "always",
+    inline: <<-SHELL
+      sudo systemctl unmask packagekit.service
+      sudo systemctl start packagekit.service
+   SHELL
+
 end
